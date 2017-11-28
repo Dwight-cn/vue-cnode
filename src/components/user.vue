@@ -1,0 +1,124 @@
+<template>
+	<div class="user">
+		<!--用户信息-->
+		<div class="user-con">
+			<div class="blur-bg" :style="'background-image: url('+ user.avatar_url +')'"></div>
+			<div class="user-info">
+				<img class="avatar" :src="user.avatar_url" alt="">
+				<h2 class="loginname">{{ user.loginname }}</h2>
+				<div class="other-info"><span>{{ fromNow(user.create_at) }}注册</span> <span>{{ user.score }} 积分</span></div>
+			</div>
+		</div>
+		
+
+		<mt-navbar v-model="selected">
+			<mt-tab-item id="1">创建的话题</mt-tab-item>
+			<mt-tab-item id="2">参与的话题</mt-tab-item>
+		</mt-navbar>
+
+		<mt-tab-container v-model="selected" :swipeable="true">
+			<mt-tab-container-item id="1">
+				<mt-cell v-for="item in user.recent_topics" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
+			</mt-tab-container-item>
+			<mt-tab-container-item id="2">
+				<mt-cell v-for="item in user.recent_replies" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
+			</mt-tab-container-item>
+		</mt-tab-container>
+		
+	</div>
+</template>
+
+<script>
+	import moment from 'moment'
+	import Vue from 'vue'
+	import {Navbar, TabItem, TabContainer, TabContainerItem, Cell,  MessageBox} from 'mint-ui'
+
+	Vue.component(Navbar.name, Navbar);
+	Vue.component(TabItem.name, TabItem);
+	Vue.component(TabContainer.name, TabContainer);
+	Vue.component(TabContainerItem.name, TabContainerItem);
+	Vue.component(Cell.name, Cell);
+
+	moment.locale('zh-cn');
+
+	export default {
+		data() {
+			return {
+				user:{
+
+				},
+				selected: '1'
+			}
+		},
+		methods: {
+			fetchUserData() {
+				var loginname = this.$route.params.loginname;
+				var url = 'https://cnodejs.org/api/v1/user/' + loginname;
+				this.$http.get(url)
+					.then(response => {
+						this.user = response.data.data;
+						console.log(this.user);
+					})
+			},
+			fromNow(date){
+				return moment(date).fromNow()
+			}
+		},
+		created() {
+			this.fetchUserData()
+		}
+	}
+</script>
+
+<style scoped>
+	.user-con{
+		position: relative;
+		overflow: hidden;
+	}
+	.blur-bg{
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: -1;
+		width: 100%;
+		height: 100%;
+		background-position: center;
+		background-size: cover;
+		-webkit-filter: blur(10px); 
+	}		
+	.user-info{
+		background: rgba(0, 0, 0, .2);
+		overflow: hidden;
+		
+	}
+	.avatar{
+		display: block;
+		margin: 26px auto 10px;
+		height: 60px;
+		width: 60px;
+		border-radius: 50%;
+		border: 2px solid #fff;
+	}
+	.loginname{
+		color: #fff;
+		text-align: center;
+		font-size: 20px;
+	}
+	.other-info{
+		color: #eee;
+		text-align: center;
+		line-height: 2;
+	}
+	.other-info>span{
+		margin: 0 .5em;
+	}
+
+	.mint-navbar .mint-tab-item {
+		color: #666;
+	}
+	.mint-navbar .mint-tab-item.is-selected {
+		border-bottom: 3px solid #80bd01;
+		color: #444;
+		margin-bottom: 0;
+	}
+</style>
