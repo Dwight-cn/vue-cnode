@@ -1,7 +1,7 @@
 <template>
 	<div class="login">
 		<div class="logo">
-			<img src="../assets/logo.svg" alt="">
+			<img src="../assets/icon/logo.svg" alt="">
 		</div>
 		<mt-field  placeholder="accesstoken" v-model="accesstoken"></mt-field>
 		<a href="javascript:void(0);" class="submit_btn" @click="login">登录</a>

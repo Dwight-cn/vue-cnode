@@ -14,6 +14,7 @@
 		<mt-navbar v-model="selected">
 			<mt-tab-item id="1">创建的话题</mt-tab-item>
 			<mt-tab-item id="2">参与的话题</mt-tab-item>
+			<mt-tab-item id="3">收藏的话题</mt-tab-item>
 		</mt-navbar>
 
 		<mt-tab-container v-model="selected" :swipeable="true">
@@ -21,6 +22,9 @@
 				<mt-cell v-for="item in user.recent_topics" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
 			</mt-tab-container-item>
 			<mt-tab-container-item id="2">
+				<mt-cell v-for="item in user.recent_replies" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
+			</mt-tab-container-item>
+			<mt-tab-container-item id="3">
 				<mt-cell v-for="item in user.recent_replies" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
 			</mt-tab-container-item>
 		</mt-tab-container>
@@ -31,7 +35,7 @@
 <script>
 	import moment from 'moment'
 	import Vue from 'vue'
-	import {Navbar, TabItem, TabContainer, TabContainerItem, Cell,  MessageBox} from 'mint-ui'
+	import {Navbar, TabItem, TabContainer, TabContainerItem, Cell,  MessageBox, Indicator} from 'mint-ui'
 
 	Vue.component(Navbar.name, Navbar);
 	Vue.component(TabItem.name, TabItem);
@@ -57,6 +61,7 @@
 				this.$http.get(url)
 					.then(response => {
 						this.user = response.data.data;
+						Indicator.close();
 						console.log(this.user);
 					})
 			},

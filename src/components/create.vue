@@ -79,7 +79,9 @@
 
 <style>
 .create_topic{
+    position: relative;
     padding: 10px;
+    z-index: 1;
 }
 .title{
     margin-bottom: 10px;
