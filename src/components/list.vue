@@ -30,7 +30,7 @@
 									<i><img src="../assets/icon/look.svg" alt=""></i>
 									<span class="visit_count">{{ item.visit_count }}</span>
 
-									<span class="create-at">{{ fromNow(item.create_at) }}</span>
+									<span class="create-at">{{ fromNow(item.last_reply_at) }}</span>
 								</div>
 							</div>
 						</router-link>

@@ -25,41 +25,46 @@
 					</div>
 				</div>
 				<!--收藏-->
-				<div class="collect" :class="{'is-collect':articleData['is_collect']}" @click="collect">
-
-				</div>
+				<div class="collect" :class="{'is-collect':articleData['is_collect']}" @click="collect"></div>
 			</div>
 		</div>
 
+		<!--话题内容-->
 		<div class="topic_content" v-html="articleData.content"></div>
+
 		<!-- 评论 -->
 		<div class="col_fade">
 			<span>{{articleData.reply_count}} 回复</span>
 		</div>
 		<ul class="panel">
-
 			<li v-for="(item, index) in articleData.replies" :key="item.author.loginname">
 				<div class="author_content">
 					<img :src="item.author.avatar_url" alt="" width="50">
 					<span class="reply_author">{{ item.author.loginname }}</span>
+					<!--回复评论-->
+					<div class="reply-box">
+						<i class="reply-btn" :data-index="index" @click="replyOther"></i>
+					</div>
 					<!--赞-->
 					<div class="up-box">
 						<i class="up-btn" :class="{'is-up':item.is_uped}" :data-index="index" @click="ups"></i>
 						<span class="up-num" v-if="item.ups.length">{{item.ups.length}}</span>
 					</div>
-
 				</div>
 				<div class="reply_content" v-html="item.content"></div>
 			</li>
 		</ul>
+
 		<!-- 发表评论 -->
 		<div class="col_fade">
 			<span>添加回复</span>
-
 		</div>
 		<div class="reply_input">
-			<mavon-editor v-model="value"></mavon-editor>
-			<a href="javascript:void(0);" class="submit_btn" @click="addReply">回复</a>
+			<mavon-editor v-model="value" :toolbars="toolbars"></mavon-editor>
+			<a href="javascript:void(0);" class="submit_btn" @click="addReply">回复
+				<span v-if="replyTo">@{{ replyTo.author.loginname }}</span>
+			</a>
+			<a href="javascript:void(0);" class="cancle_reply_btn" @click="cancleReply" v-if="replyTo">取消</a>
 		</div>
 
 	</div>
@@ -91,11 +96,34 @@ export default {
 			isLogin: false,
 			accesstoken: '1',
 			loginname: '',
+			replyTo: null,
 			tabs: {
 				'share': "分享",
 				'ask': "问答",
 				'job': "招聘",
 				'dev': "测试"
+			},
+			toolbars: {
+				bold: true, // 粗体
+				italic: true,// 斜体
+				header: true,// 标题
+				// underline: true,// 下划线
+				strikethrough: true,// 中划线
+				// mark: true,// 标记
+				// superscript: true,// 上角标
+				// subscript: true,// 下角标
+				quote: true,// 引用
+				ol: true,// 有序列表
+				ul: true,// 无序列表
+				link: true,// 链接
+				imagelink: true,// 图片链接
+				code: true,// code
+				table: true,// 表格
+				// subfield: true,// 是否需要分栏
+				fullscreen: true,// 全屏编辑
+				readmodel: true,// 沉浸式阅读
+				// htmlcode: true,// 展示html源码
+				help: true// 帮助
 			}
 		}
 	},
@@ -117,10 +145,28 @@ export default {
 				})
 		},
 
-		// 回复话题或话题
+		// 回复评论
+		replyOther(event) {
+			var replyIndex = event.target.dataset.index;
+			this.replyTo = this.articleData.replies[replyIndex];
+			this.value = '@' + this.replyTo.author.loginname + ' ';
+			this.scrollToBottom();
+		},
+		//取消回复层主
+		cancleReply() {
+			this.replyTo = null;
+			this.value = '';
+		},
+		// 滚动到底部
+		scrollToBottom() {
+			var h = document.body.scrollHeight - window.innerHeight;
+			window.scrollTo(0, h);
+		},
+		// 回复话题
 		addReply() {
+			var replyId = this.replyTo ? this.replyTo.id : '';
 			if (!this.isLogin) {
-				toLogin();
+				this.toLogin();
 			} else {
 				var topicId = this.$route.params.id;
 				var url = 'https://cnodejs.org/api/v1/topic/' + topicId + '/replies';
@@ -130,19 +176,32 @@ export default {
 				}
 				this.$http.post(url, params)
 					.then(response => {
-						this.value = '';
-						MessageBox.alert('回复成功', '');
-						this.getContent();
+						if (response.data.success) {
+							Toast({
+								message: '回复成功',
+								duration: 1000
+							});
+							this.cancleReply();
+							this.getContent();
+						} else {
+							Toast({
+								message: response.data.error_msg,
+								duration: 2000
+							});
+						}
+
 					})
 					.catch(response => {
 						console.log(response.data);
+						var errMsgArr = response.data.error_msg.split('：')
+						MessageBox.alert(errMsgArr[1],errMsgArr[0]);
 					});
 			}
 		},
 		// 收藏帖子
 		collect() {
 			if (!this.isLogin) {
-				toLogin();
+				this.toLogin();
 			} else if (!this.articleData.is_collect) {
 				var url = 'https://cnodejs.org/api/v1/topic_collect/collect';
 				var params = {
@@ -210,9 +269,9 @@ export default {
 			var thisReply = this.articleData.replies[replyIndex]
 			var replyId = thisReply.id;
 			if (!this.isLogin) {
-				toLogin();
+				this.toLogin();
 			} else {
-				var url = 'https://cnodejs.org/api/v1/reply/'+ replyId +'/ups';
+				var url = 'https://cnodejs.org/api/v1/reply/' + replyId + '/ups';
 				var params = {
 					accesstoken: this.accesstoken
 				}
@@ -357,6 +416,32 @@ export default {
 
 
 
+
+
+/*取消回复按钮*/
+
+.cancle_reply_btn {
+	display: block;
+	margin: 10px 0;
+	line-height: 32px;
+	border-radius: 3px;
+	font-size: 14px;
+	color: #5a6e79;
+	text-align: center;
+	background-color: #f3f6f9;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 /*收藏按钮*/
 
 .collect {
@@ -375,10 +460,20 @@ export default {
 
 
 
+
+
+
+
+
+
+
+
+
 /*赞*/
 
 .up-box {
 	float: right;
+	margin-right: 16px;
 	line-height: 20px;
 }
 
@@ -399,9 +494,42 @@ export default {
 .up-box span {
 	vertical-align: middle;
 }
-.up-num{
+
+.up-num {
 	color: #80bd01;
 }
+
+
+
+
+
+
+
+
+
+
+/*回复评论*/
+
+.reply-box {
+	float: right;
+}
+
+.reply-btn {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background: url(../assets/icon/reply-2.svg);
+	background-size: 100%;
+}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -421,6 +549,9 @@ export default {
 	text-align: justify;
 	line-height: 1.7;
 }
+
+
+
 
 
 
