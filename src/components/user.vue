@@ -19,17 +19,19 @@
 			<mt-tab-item id="3">收藏的话题</mt-tab-item>
 		</mt-navbar>
 
-		<mt-tab-container v-model="selected" :swipeable="true">
-			<mt-tab-container-item id="1">
-				<mt-cell v-for="item in user.recent_topics" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
-			</mt-tab-container-item>
-			<mt-tab-container-item id="2">
-				<mt-cell v-for="item in user.recent_replies" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
-			</mt-tab-container-item>
-			<mt-tab-container-item id="3">
-				<mt-cell v-for="item in topicCollect" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
-			</mt-tab-container-item>
-		</mt-tab-container>
+		<div class="user-tab-con">
+			<mt-tab-container v-model="selected" :swipeable="true">
+				<mt-tab-container-item id="1" class="user-tab-container-item">
+					<mt-cell v-for="item in user.recent_topics" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
+				</mt-tab-container-item>
+				<mt-tab-container-item id="2" class="user-tab-container-item">
+					<mt-cell v-for="item in user.recent_replies" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
+				</mt-tab-container-item>
+				<mt-tab-container-item id="3" class="user-tab-container-item">
+					<mt-cell v-for="item in topicCollect" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
+				</mt-tab-container-item>
+			</mt-tab-container>
+		</div>
 
 	</div>
 </template>
@@ -89,11 +91,46 @@ export default {
 }
 </script>
 
+<style>
+
+.user-tab-con .mint-tab-container-wrap{
+	height: 100%;
+}
+</style>
+
+
 <style scoped>
+/*layout*/
+
+.user {
+	height: 100vh;
+	position: relative;
+}
+
 .user-con {
 	position: relative;
 	overflow: hidden;
 }
+
+.user-tab-con {
+	height: 100vh;
+	padding-top: 204px;
+	margin-top: -204px;
+	box-sizing: border-box;
+}
+
+.user-tab-con .mint-tab-container,
+.user-tab-con .mint-tab-container-wrap,
+.user-tab-con .user-tab-container-item {
+	height: 100%;
+}
+
+.user-tab-con .user-tab-container-item {
+	overflow: auto;
+}
+
+
+
 
 .blur-bg {
 	position: absolute;
@@ -108,6 +145,7 @@ export default {
 }
 
 .user-info {
+	width: 100%;
 	background: rgba(0, 0, 0, .2);
 	overflow: hidden;
 }
@@ -145,13 +183,5 @@ export default {
 	border-bottom: 3px solid #80bd01;
 	color: #444;
 	margin-bottom: 0;
-}
-
-.mint-tab-container-wrap {
-	height: 100vh;
-	margin-top: -210px;
-	padding-top: 210px;
-	overflow: auto;
-	box-sizing: border-box;
 }
 </style>
