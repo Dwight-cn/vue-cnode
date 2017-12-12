@@ -60,7 +60,7 @@
 					<!--<span>新建主题</span> -->
 					<i><img src="../assets/icon/create-topic-icon.svg" alt=""></i>
 				</div>
-				<div class="my-icon-button indexicon icon-popup">
+				<div class="my-icon-button indexicon icon-popup" @click="viewMessage">
 					<!--<span>消息</span> -->
 					<i><img src="../assets/icon/msg-icon.svg" alt=""></i>
 				</div>
@@ -255,6 +255,13 @@ export default {
 				this.$router.push('/user/' + this.loginname);
 			}
 		},
+		viewMessage() {
+			if (!this.isLogin) {
+				this.toLogin();
+			} else {
+				this.$router.push('/message');
+			}
+		},
 		createTopic() {
 			if (!this.isLogin) {
 				this.toLogin();
@@ -334,6 +341,8 @@ export default {
 
 
 
+
+
 /*圆形菜单*/
 
 .list .mint-main-button {
@@ -383,6 +392,8 @@ export default {
 
 
 
+
+
 /*主题列表*/
 
 .list-cell::after {
@@ -395,11 +406,11 @@ export default {
 
 .list-cell {
 	display: block;
-	width: 98%;
+	width: 97%;
 	margin: 8px auto;
 	background-color: #fff;
 	border-radius: 5px;
-	padding: 5px;
+	padding: 10px 5px;
 	box-sizing: border-box;
 	box-shadow: 0 1px 7px hsla(202, 4%, 62%, .24);
 	color: #888;
@@ -471,6 +482,8 @@ export default {
 }
 
 
+
+
 /*==================================*/
 
 .list .mint-navbar {
@@ -505,6 +518,8 @@ export default {
 
 
 
+
+
 /*返回顶部*/
 
 .toTop {
@@ -521,6 +536,8 @@ export default {
 	background-position: center;
 	background-size: auto 60%;
 }
+
+
 
 
 
