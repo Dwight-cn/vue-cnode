@@ -55,7 +55,7 @@
 
 		<div class="menu">
 			<!--圆形菜单-->
-			<mt-palette-button content="" direction="lt" class="palette_btn" :radius="60" ref="target_1" mainButtonStyle="color:#fff;background-color:#80bd01;">
+			<mt-palette-button content="" direction="lt" class="palette_btn" :radius="80" ref="target_1" mainButtonStyle="color:#fff;background-color:#80bd01;">
 				<div class="my-icon-button indexicon icon-popup" @click="createTopic">
 					<!--<span>新建主题</span> -->
 					<i><img src="../assets/icon/create-topic-icon.svg" alt=""></i>
@@ -154,6 +154,7 @@ export default {
 		},
 		/*获取数据*/
 		fetchData(param) {
+			Indicator.open();
 			this.tab = param.tab || this.$route.params.tab || 'all';
 			this.homeData[this.tab].page = param.page || this.$route.params.page || 1;
 			console.log(this.tab);
@@ -171,9 +172,7 @@ export default {
 			this.fetchData({ tab: tab })
 				.then(function(response) {
 					this.$data.homeData[this.tab].content = response.data.data;
-					// console.log(this.$data.homeData[this.tab].content);
 					console.log(response.data);
-					// console.log(response.json());
 					Indicator.close();
 				})
 				.catch(function(response) {
@@ -185,6 +184,7 @@ export default {
 			this.allLoaded = false;
 			this.fetchData({ tab: this.tab })
 				.then(function(response) {
+					Indicator.close();
 					this.$data.homeData[this.tab].content = response.data.data;
 					console.log(this.$data.homeData[this.tab].content);
 					var index = 0;
@@ -220,6 +220,7 @@ export default {
 			}
 			this.fetchData(params)
 				.then(function(response) {
+					Indicator.close();
 					if (response.data.data.length === 0) {
 						this.allLoaded = true;// 若数据已全部获取完毕
 					}
@@ -312,13 +313,7 @@ export default {
 </script>
 
 <style>
-.clearfix::after {
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden;
-}
+
 
 .list {
 	background: #fafaff;
@@ -336,63 +331,6 @@ export default {
 	overflow: auto;
 	box-sizing: border-box;
 }
-
-
-
-
-
-
-
-/*圆形菜单*/
-
-.list .mint-main-button {
-	background-image: url(../assets/icon/more-icon.svg);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: auto 70%;
-}
-
-.list .mint-palette-button {
-	display: block;
-	width: 40px;
-	height: 40px;
-}
-
-.list .my-icon-button {
-	width: 30px;
-	height: 30px;
-}
-
-.list .my-icon-button i {
-	position: relative;
-	display: block;
-	/*float: left;*/
-	line-height: 30px;
-	text-align: center;
-	width: 30px;
-	height: 30px;
-	background: rgb(128, 189, 1);
-	border-radius: 50%;
-	/*z-index: 2;*/
-}
-
-.list .my-icon-button i img {
-	width: 70%;
-	height: 70%;
-}
-
-.mint-sub-button-container>* {
-	top: 7px;
-	left: 7px;
-}
-
-
-
-
-
-
-
-
 
 /*主题列表*/
 
@@ -512,9 +450,6 @@ export default {
 .mint-cell-value {
 	font-size: 0.6rem;
 }
-
-
-
 
 
 

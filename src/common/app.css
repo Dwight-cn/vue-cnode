@@ -10,6 +10,14 @@
 }
 
 
+.clearfix::after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
 img {
     width: auto\9;
     height: auto;
@@ -23,86 +31,12 @@ a {
     text-decoration: none;
 }
 
-.markdown-text p, .preview p {
-    white-space: pre-wrap;
-    white-space: -moz-pre-wrap;
-    white-space: -pre-wrap;
-    white-space: -o-pre-wrap;
-    word-wrap: break-word;
-    line-height: 1.5;
-}
 
-.preview p, .reply_content p, .reply_form p, .topic_content p {
-    font-size: 15px;
-    line-height: 1.7em;
-    overflow: auto;
-}
 
-.panel .markdown-text a {
-    color: #08c;
-}
 
-code, pre {
-    padding: 0 3px 2px;
-    font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
-    font-size: 12px;
-    color: #333;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-}
 
-code {
-    padding: 2px 4px;
-    color: #d14;
-    white-space: nowrap;
-    background-color: #f7f7f9;
-    border: 1px solid #e1e1e8;
-}
 
-code {
-    padding: 0;
-    border: none;
-}
-
-.markdown-text li code, .markdown-text p code, .preview li code, .preview p code {
-    color: #000;
-    background-color: #fcfafa;
-    padding: 4px 6px;
-}
-
-.panel{
-	padding: 0 10px;
-	list-style: none;
-	background-color: #fefefe;
-}
-.panel > li{
-	border-bottom: 1px solid #eee;
-	padding: 14px 10px;
-}
-.author_content img{
-	width: 30px;
-	height: 30px;
-	margin-right: 10px;
-	border-radius: 5px;
-}
-.reply_author {
-    font-size: 12px;
-    font-weight: 700;
-    color: #666;
-}
-.reply_content {
-    clear: both;
-    padding-left: 0;
-    padding-top: 5px;
-}
-.col_fade{
-    margin-top: 20px;
-    border-left: 2px solid #80bd01;
-	background-color: #f3f6f9;
-	padding: 10px 14px;
-}
-
+/*提交按钮*/
 .submit_btn{
     display: block;
     margin: 10px 0;
@@ -113,3 +47,51 @@ code {
     text-align: center;
     background-color: #80bd01;
 }
+
+
+/*==========================圆形菜单============================*/
+
+#app .mint-main-button {
+	background-image: url(../assets/icon/more-icon.svg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: auto 70%;
+    box-shadow: 3px 3px 20px 0px #93bf36;
+}
+
+#app .mint-palette-button {
+	display: block;
+	width: 50px;
+	height: 50px;
+}
+
+#app .my-icon-button {
+	width: 40px;
+	height: 40px;
+}
+
+#app .my-icon-button i {
+	position: relative;
+	display: block;
+	/*float: left;*/
+	line-height: 40px;
+	text-align: center;
+	width: 40px;
+	height: 40px;
+	background: rgb(128, 189, 1);
+	border-radius: 50%;
+	/*z-index: 2;*/
+    box-shadow: 3px 3px 20px 0px #93bf36;
+}
+
+#app  .my-icon-button i img {
+	width: 70%;
+	height: 70%;
+}
+
+#app .mint-sub-button-container>* {
+	top: 7px;
+	left: 7px;
+}
+
+/*======================================================*/

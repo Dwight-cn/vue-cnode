@@ -16,18 +16,17 @@
                         空空如也~
                     </div>
                     <router-link class="message-content-item" v-for="item in messageData.hasnot_read_messages" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.topic.id">
-                        <div class="item-head">
-                            <span class="item-title">{{ item.topic.title }}</span>
-                        </div>
-                        <div class="item-content">
+                        <div class="item-content clearfix">
                             <div class="item-content-avatar"><img :src="item.author.avatar_url" alt=""></div>
                             <div class="item-content-info">
-                                <div class="info-title">由
+                                <div class="info-detail">
                                     <span class="info-author">{{ item.author.loginname }}</span>
-                                    <span class="info-time">{{ fromNow(item.reply.create_at) }}</span>
+                                    在帖子
+                                    <span class="info-title">{{ item.topic.title }}</span>
                                     <span class="info-type">{{messageTypeMap[item.type]}}了你</span>
                                 </div>
-                                <div class="info-content">{{ item.reply.content }}</div>
+                                <div class="info-content" v-html="item.reply.content"></div>
+                                <div class="info-time">{{ fromNow(item.reply.create_at) }}</div>
                             </div>
                         </div>
                     </router-link>
@@ -37,19 +36,17 @@
                         空空如也~
                     </div>
                     <router-link class="message-content-item" v-for="item in messageData.has_read_messages" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.topic.id">
-                        <div class="item-head">
-                            <!--<span class="item-title">{{ item.topic.title }}</span>-->
-                        </div>
-                        <div class="item-content">
+                        <div class="item-content clearfix">
                             <div class="item-content-avatar"><img :src="item.author.avatar_url" alt=""></div>
                             <div class="item-content-info">
-                                <div class="info-title">
+                                <div class="info-detail">
                                     <span class="info-author">{{ item.author.loginname }}</span>
-                                    <!--<span class="info-time">{{ fromNow(item.reply.create_at) }}</span>-->
-                                    在帖子<span class="info-title">{{ item.topic.title }}</span>
+                                    在帖子
+                                    <span class="info-title">{{ item.topic.title }}</span>
                                     <span class="info-type">{{messageTypeMap[item.type]}}了你</span>
                                 </div>
                                 <div class="info-content" v-html="item.reply.content"></div>
+                                <div class="info-time">{{ fromNow(item.reply.create_at) }}</div>
                             </div>
                         </div>
                     </router-link>
@@ -97,7 +94,7 @@ export default {
                 this.toLogin();
             } else {
                 var accesstoken = this.accesstoken ? this.accesstoken : ''
-                var url = 'https://cnodejs.org/api/v1/messages' + '?accesstoken=' + accesstoken;
+                var url = 'https://cnodejs.org/api/v1/messages' + '?mdrender=false&accesstoken=' + accesstoken;
                 this.$http.get(url)
                     .then(function(response) {
                         _this.messageData = response.data.data;
@@ -125,11 +122,17 @@ export default {
         }
     },
     created() {
+        this.selected = this.$route.params.tab || '1';
         this.cheakLogin()
             .then(action => {
                 this.fetchMessageData();
             });
-    }
+    },
+	watch: {
+		selected: function(val) {
+			this.$router.push('/message/' + val);
+		}
+	}
 }
 </script>
 
@@ -166,70 +169,14 @@ export default {
     overflow: auto;
 }
 
-.info-content .markdown-text * {
-    display: inline!important;
-}
-
-
-
-
-
-
-
-
-
 
 
 
 /*消息*/
 
-.item-content .item-content-info,
-.item-content,
-.message-content-item .item-head,
-.message-content-item,
-{
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-}
-
-.item-content .item-content-avatar,
-.noreadnum,
-.readnum {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-}
-
-.item-content {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-}
-
 .message-content-item {
-    /*display: block;
-    box-shadow: 0 1px 7px hsla(202, 4%, 62%, .24);
-    border: 1px solid #eee;
-    height: 112px;
-    width: 100%;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    padding: 4px;
-    box-sizing: border-box;
-    overflow: hidden;*/
     display: block;
-    width: 98%;
+    width: 97%;
     margin: 8px auto;
     background-color: #fff;
     border-radius: 5px;
@@ -240,76 +187,64 @@ export default {
     position: relative;
 }
 
-.message-content-item .item-head {
-    padding: 4px;
-    width: 100%;
-    height: 28%;
-}
-
-.message-content-item .item-head .item-title {
-    text-decoration: none;
+.item-content-avatar {
+    float: left;
+    width: 50px;
+    min-height: 50px;
+    text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-tap-highlight-color: transparent;
-    color: #324057;
 }
 
-.item-content {
-    margin-top: -4px;
-    height: 73%;
-    padding: 2px;
-    width: 100%;
-}
-
-.item-content .item-content-avatar {
-    width: 14%;
-}
-
-.item-content .item-content-info {
-    width: 86%;
-}
-
-.item-content .item-content-avatar img {
-    width: 42px;
-    height: 42px;
-    border: 1px solid #ddd;
+.item-content-avatar img {
     border-radius: 50%;
-    margin-right: 8px;
+    width: 44px;
+    height: 44px;
+    background-color: #eee;
+    box-shadow: 2px 3px 5px rgba(51, 51, 51, 0.5);
 }
 
-.item-content .item-content-info .info-title {
-    width: 100%;
-    height: 50%;
+.item-content-info {
+    margin-left: 62px;
     font-size: 14px;
 }
 
+.info-detail{
+    line-height:1;
+    vertical-align: top;
+    /*padding-bottom: 10px;*/
+}
 .info-author,
-.info-type {
-    color: #2196f3;
+.info-title {
+    color: #80bd01;
 }
-
-.info-time {
-    color: #e4404c;
+.info-title {
+    display: inline-block;
+    max-width: 7em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: top;
+}
+.info-content{
+     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #6a737d;
+    line-height: 2.5;
+}
+.info-time{
     font-size: 12px;
+    text-align: right;
+    padding-right: 0.5em;
 }
-
-.item-content .item-content-info .info-content {
-    margin-top: 4px;
-    width: 100%;
-    height: 50%;
-    -webkit-line-clamp: 2;
-    font-size: 12px;
-    color: #232323;
-}
-
 .no-message {
     font-size: 16px;
     line-height: 80px;
     color: #cccccc;
     text-align: center;
 }
+
 
 
 

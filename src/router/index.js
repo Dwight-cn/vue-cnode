@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '../components/Hello'
 import List from '../components/list'
 import Content from '../components/content'
 import Login from '../components/login'
@@ -12,11 +11,6 @@ Vue.use(Router)
 
 export default new Router({
 	routes: [
-		{
-			path: '/hello',
-			name: 'Hello',
-			component: Hello
-		},
 		{
 			path: '/',
 			name: 'List',
@@ -48,6 +42,10 @@ export default new Router({
 		},
 		{
 			path: '/message',
+			component: Message
+		},
+		{
+			path: '/message/:tab',
 			component: Message
 		}
 	],

@@ -49,7 +49,7 @@ new Vue({
 })
 
 // 全局路由切换时，loading
-router.beforeEach((to, from, next) => {
-	//   Indicator.open();
-	next();
-})
+// router.beforeEach((to, from, next) => {
+// 	  Indicator.open();
+// 	next();
+// })

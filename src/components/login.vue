@@ -63,18 +63,13 @@
 </script>
 
 <style>
-	body, html, #app{
-		height: 100%;
-		background: #444;
-	}
-	#app{
-		
-	}
 	.login{
 		padding: 0 10px;
+		height: 100vh;
+		box-sizing: border-box;
+		background-color: #444;;
 	}
-	.logo{
-	}
+
 	.logo img{
 		display: block;
 		margin: 0 auto;

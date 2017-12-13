@@ -129,6 +129,7 @@ export default {
 	},
 	methods: {
 		getContent() {
+			Indicator.open();
 			var _this = this;
 			this.id = this.$route.params.id;
 			var accesstoken = this.accesstoken ? this.accesstoken : ''
@@ -141,6 +142,7 @@ export default {
 					console.log(_this.articleData)
 				})
 				.catch(function(response) {
+					Indicator.close();
 					console.log(response);
 				})
 		},
@@ -327,16 +329,14 @@ export default {
 	color: #5a6e79;
 }
 
-.reply_input {
-	margin: 10px;
+.col_fade{
+    margin-top: 20px;
+    border-left: 2px solid #80bd01;
+	background-color: #f3f6f9;
+	padding: 10px 14px;
 }
 
-
-
-.mint-cell-value {
-	font-size: 0.6rem;
-}
-
+/*======================标题区域======================*/
 .topic-header {
 	padding: 10px;
 	background-color: #f3f6f9;
@@ -385,7 +385,6 @@ export default {
 	height: 100%;
 }
 
-
 .topic-header .user .user-l .user-name p {
 	padding: 0;
 	line-height: 23px;
@@ -409,40 +408,9 @@ export default {
 .topic-header .user .user-l .user-name .views:before {
 	content: "\2022";
 }
+/*====================================================*/
 
-
-
-
-
-
-
-
-
-/*取消回复按钮*/
-
-.cancle_reply_btn {
-	display: block;
-	margin: 10px 0;
-	line-height: 32px;
-	border-radius: 3px;
-	font-size: 14px;
-	color: #5a6e79;
-	text-align: center;
-	background-color: #f3f6f9;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-/*收藏按钮*/
+/*======================收藏按钮======================*/
 
 .collect {
 	margin-top: 8px;
@@ -458,18 +426,139 @@ export default {
 	background-size: 100%;
 }
 
+/*====================================================*/
+
+
+/*==========================文章内容======================*/
+.topic_content {
+	margin: 10px;
+}
+
+.topic_content h1 {
+	font-size: 32.5px;
+}
+
+.topic_content p {
+	margin: 1em auto;
+	text-align: justify;
+	line-height: 1.7;
+}
+.markdown-text p, .preview p {
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+    line-height: 1.5;
+}
+
+.preview p, .reply_content p, .reply_form p, .topic_content p {
+    font-size: 15px;
+    line-height: 1.7em;
+    overflow: auto;
+}
+
+.panel .markdown-text a {
+    color: #08c;
+}
+
+code, pre {
+    padding: 0 3px 2px;
+    font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+    font-size: 12px;
+    color: #333;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+code {
+    padding: 2px 4px;
+    color: #d14;
+    /*white-space: nowrap;*/
+    background-color: #f7f7f9;
+    border: 1px solid #e1e1e8;
+}
+
+code {
+    padding: 0;
+    border: none;
+}
+
+.markdown-text li code, .markdown-text p code, .preview li code, .preview p code {
+    color: #000;
+    background-color: #fcfafa;
+    padding: 4px 6px;
+}
+/*代码样式*/
+.prettyprint{
+	background: #f7f7f9;
+	overflow-x: scroll;
+}
+
+.preview h1,
+.preview h2,
+.preview h3,
+.preview h4,
+.preview h5,
+.preview h6,
+.reply_area h1,
+.reply_area h2,
+.reply_area h3,
+.reply_area h4,
+.reply_area h5,
+.reply_area h6,
+.topic_content h1,
+.topic_content h2,
+.topic_content h3,
+.topic_content h4,
+.topic_content h5,
+.topic_content h6 {
+	margin: 30px 0 15px;
+	border-bottom: 1px solid #eee;
+}
+/*=====================================================*/
+
+
+
+/*=====================评论区==========================*/
+.panel{
+	padding: 0 10px;
+	list-style: none;
+	background-color: #fefefe;
+}
+.panel > li{
+	border-bottom: 1px solid #eee;
+	padding: 14px 10px;
+}
+.author_content img{
+	width: 30px;
+	height: 30px;
+	margin-right: 10px;
+	border-radius: 5px;
+}
+/*=====================================================*/
+
+/*======================取消回复按钮===================*/
+
+.cancle_reply_btn {
+	display: block;
+	margin: 10px 0;
+	line-height: 32px;
+	border-radius: 3px;
+	font-size: 14px;
+	color: #5a6e79;
+	text-align: center;
+	background-color: #f3f6f9;
+}
+/*====================================================*/
 
 
 
 
 
 
-
-
-
-
-
-/*赞*/
+/*========================赞==========================*/
 
 .up-box {
 	float: right;
@@ -498,17 +587,11 @@ export default {
 .up-num {
 	color: #80bd01;
 }
+/*====================================================*/
 
 
 
-
-
-
-
-
-
-
-/*回复评论*/
+/*======================回复评论======================*/
 
 .reply-box {
 	float: right;
@@ -521,68 +604,15 @@ export default {
 	background: url(../assets/icon/reply-2.svg);
 	background-size: 100%;
 }
+/*====================================================*/
 
 
-
-
-
-
-
-
-
-
-
-
-
-/*帖子内容*/
-
-.topic_content {
+/*=====================添加回复区域====================*/
+.reply_input {
 	margin: 10px;
 }
-
-.topic_content h1 {
-	font-size: 32.5px;
-}
-
-.topic_content p {
-	margin: 1em auto;
-	text-align: justify;
-	line-height: 1.7;
-}
+/*======================================================*/
 
 
 
-
-
-
-
-
-
-
-
-
-
-/*代码样式*/
-
-.preview h1,
-.preview h2,
-.preview h3,
-.preview h4,
-.preview h5,
-.preview h6,
-.reply_area h1,
-.reply_area h2,
-.reply_area h3,
-.reply_area h4,
-.reply_area h5,
-.reply_area h6,
-.topic_content h1,
-.topic_content h2,
-.topic_content h3,
-.topic_content h4,
-.topic_content h5,
-.topic_content h6 {
-	margin: 30px 0 15px;
-	border-bottom: 1px solid #eee;
-}
 </style>
