@@ -10,6 +10,9 @@
 					<span>{{ fromNow(user.create_at) }}注册</span>
 					<span>{{ user.score }} 积分</span>
 				</div>
+				<div class="user-exit">
+					<img src="" alt="">
+				</div>
 			</div>
 		</div>
 
@@ -92,8 +95,7 @@ export default {
 </script>
 
 <style>
-
-.user-tab-con .mint-tab-container-wrap{
+.user-tab-con .mint-tab-container-wrap {
 	height: 100%;
 }
 </style>
@@ -131,7 +133,26 @@ export default {
 
 
 
+/*======================用户信息=====================*/
 
+.user-info {
+	width: 100%;
+	background: rgba(0, 0, 0, .2);
+	overflow: hidden;
+	position: relative;
+}
+/*登出*/
+.user-exit {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	width: 30px;
+	height: 30px;
+	background: url(../assets/icon/exit.svg);
+	background-size: 100%;
+}
+
+/*背景模糊*/
 .blur-bg {
 	position: absolute;
 	top: 0;
@@ -144,11 +165,6 @@ export default {
 	-webkit-filter: blur(10px);
 }
 
-.user-info {
-	width: 100%;
-	background: rgba(0, 0, 0, .2);
-	overflow: hidden;
-}
 
 .avatar {
 	display: block;
@@ -174,6 +190,9 @@ export default {
 .other-info>span {
 	margin: 0 .5em;
 }
+
+/*==============================================*/
+
 
 .mint-navbar .mint-tab-item {
 	color: #666;

@@ -11,6 +11,7 @@
 			<mt-tab-container-item v-for="(value, key) in homeData" :id="key" :key="key">
 				<div class="list-wrap">
 					<mt-loadmore :top-method="loadTop" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore" :auto-fill="false" @top-status-change="handleTopChange" @bottom-status-change="handleBottomChange">
+				
 
 						<router-link class="list-cell clearfix" v-for="item in value.content" :to="getUrl(item.id)" :key="item.id">
 							<div class="author-box">
@@ -34,18 +35,18 @@
 								</div>
 							</div>
 						</router-link>
-						<div slot="top" class="mint-loadmore-top">
-							<span v-show="topStatus !== 'loading'" :class="{ 'rotate': topStatus === 'drop' }">下拉刷新↓</span>
-							<span v-show="topStatus === 'loading'">
-								<mt-spinner type="triple-bounce"></mt-spinner>
-							</span>
-						</div>
-						<div slot="bottom" class="mint-loadmore-bottom">
-							<span v-show="bottomStatus !== 'loading'" :class="{ 'rotate': bottomStatus === 'drop' }">加载更多...</span>
-							<span v-show="bottomStatus === 'loading'">
-								<mt-spinner type="triple-bounce"></mt-spinner>
-							</span>
-						</div>
+						<!--<div slot="top" class="mint-loadmore-top">
+									<span v-show="topStatus !== 'loading'" :class="{ 'rotate': topStatus === 'drop' }">下拉刷新↓</span>
+									<span v-show="topStatus === 'loading'">
+										<mt-spinner type="triple-bounce"></mt-spinner>
+									</span>
+								</div>-->
+						<!--<div slot="bottom" class="mint-loadmore-bottom">
+									<span v-show="bottomStatus !== 'loading'" :class="{ 'rotate': bottomStatus === 'drop' }">加载更多...</span>
+									<span v-show="bottomStatus === 'loading'">
+										<mt-spinner type="triple-bounce"></mt-spinner>
+									</span>
+								</div>-->
 
 						<div v-show="allLoaded" class="no-more">没有更多了喂</div>
 					</mt-loadmore>
@@ -238,6 +239,7 @@ export default {
 
 					self.$refs.loadmore[ii].onBottomLoaded();
 					console.log(self.$refs.loadmore);
+					// this.listLoading = false;
 				})
 				.catch(function(response) {
 					console.log(response);
@@ -312,9 +314,7 @@ export default {
 
 </script>
 
-<style>
-
-
+<style scoped>
 .list {
 	background: #fafaff;
 }
@@ -331,6 +331,8 @@ export default {
 	overflow: auto;
 	box-sizing: border-box;
 }
+
+
 
 /*主题列表*/
 
@@ -357,7 +359,7 @@ export default {
 
 .list-cell .author-box {
 	float: left;
-	width: 50px;
+	width: 55px;
 	text-align: center;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -377,7 +379,7 @@ export default {
 }
 
 .cell-right {
-	margin-left: 66px;
+	margin-left: 60px;
 }
 
 .list-cell .title-bar {
@@ -422,6 +424,8 @@ export default {
 
 
 
+
+
 /*==================================*/
 
 .list .mint-navbar {
@@ -455,6 +459,8 @@ export default {
 
 
 
+
+
 /*返回顶部*/
 
 .toTop {
@@ -471,6 +477,8 @@ export default {
 	background-position: center;
 	background-size: auto 60%;
 }
+
+
 
 
 

@@ -129,9 +129,12 @@ export default {
             });
     },
 	watch: {
-		selected: function(val) {
-			this.$router.push('/message/' + val);
-		}
+        // '$route': function(to, from) {
+		// 	this.selected = to.params.tab || '1';
+		// },
+		// selected: function(val) {
+		// 	this.$router.push('/message/' + val);
+		// }
 	}
 }
 </script>

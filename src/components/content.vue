@@ -195,7 +195,7 @@ export default {
 					})
 					.catch(response => {
 						console.log(response.data);
-						var errMsgArr = response.data.error_msg.split('：')
+						var errMsgArr = response.data.error_msg.split('：');
 						MessageBox.alert(errMsgArr[1],errMsgArr[0]);
 					});
 			}
