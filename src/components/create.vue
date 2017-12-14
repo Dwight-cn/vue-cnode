@@ -7,9 +7,6 @@
         <select name="" id="" v-model="tab" class="tab-select">
             <option v-for="(value, key) in tabs" :value="key" :key="key">{{value}}</option>
         </select>
-        <mt-popup v-model="popupVisible" position="bottom" popup-transition="popup-fade">
-            <mt-picker :slots="slots" @change="tab"></mt-picker>
-        </mt-popup>
         <div class="creat_input">
             <mavon-editor v-model="value" :toolbars="toolbars"></mavon-editor>
             <a href="javascript:void(0);" class="submit_btn" @click="createTopic">新建主题</a>

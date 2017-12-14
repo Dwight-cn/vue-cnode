@@ -10,9 +10,7 @@
 					<span>{{ fromNow(user.create_at) }}注册</span>
 					<span>{{ user.score }} 积分</span>
 				</div>
-				<div class="user-exit">
-					<img src="" alt="">
-				</div>
+				<div class="user-exit" @click="Logout"> </div>
 			</div>
 		</div>
 
@@ -42,7 +40,7 @@
 <script>
 import moment from 'moment'
 import Vue from 'vue'
-import { Navbar, TabItem, TabContainer, TabContainerItem, Cell, MessageBox, Indicator } from 'mint-ui'
+import { Navbar, TabItem, TabContainer, TabContainerItem, Cell, MessageBox, Indicator, Toast } from 'mint-ui'
 
 Vue.component(Navbar.name, Navbar);
 Vue.component(TabItem.name, TabItem);
@@ -82,6 +80,13 @@ export default {
 					Indicator.close();
 					console.log(this.topicCollect);
 				})
+		},
+		Logout() {
+			localStorage.removeItem("accesstoken");
+			Toast({
+				message: '退出成功',
+				duration: 1000
+			});
 		},
 		fromNow(date) {
 			return moment(date).fromNow()
@@ -133,6 +138,11 @@ export default {
 
 
 
+
+
+
+
+
 /*======================用户信息=====================*/
 
 .user-info {
@@ -141,7 +151,14 @@ export default {
 	overflow: hidden;
 	position: relative;
 }
+
+
+
+
+
+
 /*登出*/
+
 .user-exit {
 	position: absolute;
 	top: 8px;
@@ -152,7 +169,13 @@ export default {
 	background-size: 100%;
 }
 
+
+
+
+
+
 /*背景模糊*/
+
 .blur-bg {
 	position: absolute;
 	top: 0;
@@ -191,8 +214,12 @@ export default {
 	margin: 0 .5em;
 }
 
-/*==============================================*/
 
+
+
+
+
+/*==============================================*/
 
 .mint-navbar .mint-tab-item {
 	color: #666;

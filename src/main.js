@@ -12,7 +12,7 @@ Vue.config.productionTip = false
 // 检查用户是否已登录
 Vue.prototype.cheakLogin = function () {
 	return new Promise((resolve, reject) => {
-		var accesstoken = localStorage.getItem("accesstoken");
+		var accesstoken = localStorage.getItem("accesstoken") || '';
 		if (accesstoken) {
 			var url = 'https://cnodejs.org/api/v1/accesstoken';
 			var params = {

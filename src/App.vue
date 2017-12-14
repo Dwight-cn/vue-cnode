@@ -1,12 +1,15 @@
 <template>
 	<div id="app">
-	<!-- <img src="./assets/logo.png"> -->
-	<router-view></router-view>
+		<!-- <img src="./assets/logo.png"> -->
+		<transition name="fade-in-left">
+			<router-view></router-view>
+		</transition>
 	</div>
 </template>
 
 <script>
 import Vue from 'vue'
+
 
 export default {
 	name: 'app'
@@ -23,4 +26,24 @@ export default {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+
+/*===================过渡效果================*/
+
+.fade-in-left-enter-active {
+  animation: fade-in-left .5s;
+}
+.fade-in-left-leave-active {
+  animation: fade-in-left .5s reverse;
+}
+@keyframes fade-in-left {
+  0% {
+    transform: translateX(-10%);
+	opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+	opacity: 1;
+  }
+}
+/*==========================================*/
 </style>
