@@ -33,20 +33,29 @@ export default new Router({
 			component: Login
 		},
 		{
+			path: '/user',
+			component: User,
+			meta: {
+				needLogin: true
+			}
+		},
+		{
 			path: '/user/:loginname',
 			component: User
 		},
 		{
 			path: '/create',
-			component: Create
+			component: Create,
+			meta: {
+				needLogin: true
+			}
 		},
 		{
 			path: '/message',
-			component: Message
-		},
-		{
-			path: '/message/:tab',
-			component: Message
+			component: Message,
+			meta: {
+				needLogin: true
+			}
 		}
 	],
 	scrollBehavior(to, from, savedPosition) {

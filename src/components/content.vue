@@ -73,9 +73,10 @@
 <script>
 // import Vue from 'vue'
 // import mavonEditor from 'mavon-editor'
-import { MessageBox, Indicator, Toast } from 'mint-ui';
+import { MessageBox, Indicator } from 'mint-ui';
 import { mavonEditor } from 'mavon-editor'
 import moment from 'moment'
+import { mapState } from 'vuex'
 
 import 'mavon-editor/dist/css/index.css'
 
@@ -93,9 +94,6 @@ export default {
 			articleData: {},
 			author: {},
 			value: '',
-			isLogin: false,
-			accesstoken: '1',
-			loginname: '',
 			replyTo: null,
 			tabs: {
 				'share': "分享",
@@ -127,6 +125,12 @@ export default {
 			}
 		}
 	},
+	// 计算属性 映射为 store.state中的属性
+    computed: mapState([
+        'accesstoken',
+        'isLogin',
+        'user'
+    ]),
 	methods: {
 		getContent() {
 			Indicator.open();
@@ -311,7 +315,7 @@ export default {
 		},
 	},
 	created() {
-		this.cheakLogin();
+		// this.cheakLogin();
 		this.getContent();
 	},
 	watch: {

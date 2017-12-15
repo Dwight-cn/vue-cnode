@@ -11,7 +11,6 @@
 			<mt-tab-container-item v-for="(value, key) in homeData" :id="key" :key="key">
 				<div class="list-wrap">
 					<mt-loadmore :top-method="loadTop" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore" :auto-fill="false" @top-status-change="handleTopChange" @bottom-status-change="handleBottomChange">
-				
 
 						<router-link class="list-cell clearfix" v-for="item in value.content" :to="getUrl(item.id)" :key="item.id">
 							<div class="author-box">
@@ -36,17 +35,17 @@
 							</div>
 						</router-link>
 						<!--<div slot="top" class="mint-loadmore-top">
-									<span v-show="topStatus !== 'loading'" :class="{ 'rotate': topStatus === 'drop' }">下拉刷新↓</span>
-									<span v-show="topStatus === 'loading'">
-										<mt-spinner type="triple-bounce"></mt-spinner>
-									</span>
-								</div>-->
+										<span v-show="topStatus !== 'loading'" :class="{ 'rotate': topStatus === 'drop' }">下拉刷新↓</span>
+										<span v-show="topStatus === 'loading'">
+											<mt-spinner type="triple-bounce"></mt-spinner>
+										</span>
+									</div>-->
 						<!--<div slot="bottom" class="mint-loadmore-bottom">
-									<span v-show="bottomStatus !== 'loading'" :class="{ 'rotate': bottomStatus === 'drop' }">加载更多...</span>
-									<span v-show="bottomStatus === 'loading'">
-										<mt-spinner type="triple-bounce"></mt-spinner>
-									</span>
-								</div>-->
+										<span v-show="bottomStatus !== 'loading'" :class="{ 'rotate': bottomStatus === 'drop' }">加载更多...</span>
+										<span v-show="bottomStatus === 'loading'">
+											<mt-spinner type="triple-bounce"></mt-spinner>
+										</span>
+									</div>-->
 
 						<div v-show="allLoaded" class="no-more">没有更多了喂</div>
 					</mt-loadmore>
@@ -57,17 +56,23 @@
 		<div class="menu">
 			<!--圆形菜单-->
 			<mt-palette-button content="" direction="lt" class="palette_btn" :radius="80" ref="target_1" mainButtonStyle="color:#fff;background-color:#80bd01;">
-				<div class="my-icon-button indexicon icon-popup" @click="createTopic">
+				<div class="my-icon-button indexicon icon-popup">
 					<!--<span>新建主题</span> -->
-					<i><img src="../assets/icon/create-topic-icon.svg" alt=""></i>
+					<router-link to="/create">
+						<i><img src="../assets/icon/create-topic-icon.svg" alt=""></i>
+					</router-link>
 				</div>
-				<div class="my-icon-button indexicon icon-popup" @click="viewMessage">
+				<div class="my-icon-button indexicon icon-popup">
 					<!--<span>消息</span> -->
+					<router-link to="/message">
 					<i><img src="../assets/icon/msg-icon.svg" alt=""></i>
+					</router-link>
 				</div>
-				<div class="my-icon-button indexicon icon-popup" @click="enterUser">
+				<div class="my-icon-button indexicon icon-popup">
 					<!--<span>个人中心</span>-->
+					<router-link to="/user">
 					<i><img src="../assets/icon/login-icon.svg" alt=""></i>
+					</router-link>
 				</div>
 			</mt-palette-button>
 
@@ -83,6 +88,7 @@
 import Vue from 'vue'
 import { Navbar, TabItem, TabContainer, TabContainerItem, Loadmore, Cell, Indicator, Badge, PaletteButton, MessageBox, Spinner, Toast } from 'mint-ui'
 import VueResource from 'vue-resource'
+import { mapState } from 'vuex'
 import moment from 'moment'
 
 // Vue.use(MintUI)
@@ -143,19 +149,25 @@ export default {
 			topStatus: '',
 			bottomStatus: '',
 			allLoaded: false,
-			isLogin: false,
-			accesstoken: '',
-			loginname: '',
+			// isLogin: false,
+			// accesstoken: '',
+			// loginname: '',
 			atTop: true
 		}
 	},
+	// 计算属性 映射为 store.state中的属性
+    computed: mapState([
+        'accesstoken',
+        'isLogin',
+        'user'
+    ]),
 	methods: {
 		getUrl(id) {
 			return '/topic/' + id
 		},
 		/*获取数据*/
 		fetchData(param) {
-			Indicator.open();
+			// Indicator.open();
 			this.tab = param.tab || this.$route.params.tab || 'all';
 			this.homeData[this.tab].page = param.page || this.$route.params.page || 1;
 			console.log(this.tab);
@@ -169,7 +181,7 @@ export default {
 		},
 		// 更新列表
 		updateListData(tab) {
-			// Indicator.open();
+			Indicator.open();
 			this.fetchData({ tab: tab })
 				.then(function(response) {
 					this.$data.homeData[this.tab].content = response.data.data;
@@ -251,6 +263,7 @@ export default {
 		handleBottomChange(status) {
 			this.bottomStatus = status;
 		},
+		/*
 		enterUser() {
 			if (!this.isLogin) {
 				this.toLogin();
@@ -271,11 +284,11 @@ export default {
 			} else {
 				this.$router.push('/create');
 			}
-		},
+		},*/
 		fromNow(date) {
 			return moment(date).fromNow()
 		},
-		toLogin() {
+		/*toLogin() {
 			MessageBox.confirm('您还未登录,是否登录？')
 				.then(action => {
 					this.$router.push('/login');
@@ -283,7 +296,7 @@ export default {
 				.catch(action => {
 
 				});
-		},
+		},*/
 		// 返回顶部
 		toTop() {
 			document.body.scrollTop = 0;
@@ -292,7 +305,7 @@ export default {
 	},
 	created() {
 		this.tab = this.$route.params.tab || 'all';
-		this.cheakLogin();
+		// this.cheakLogin();
 		this.updateListData();
 
 		var scrollTop = 0;
@@ -331,6 +344,7 @@ export default {
 	overflow: auto;
 	box-sizing: border-box;
 }
+
 
 
 
@@ -426,6 +440,7 @@ export default {
 
 
 
+
 /*==================================*/
 
 .list .mint-navbar {
@@ -461,6 +476,7 @@ export default {
 
 
 
+
 /*返回顶部*/
 
 .toTop {
@@ -477,6 +493,7 @@ export default {
 	background-position: center;
 	background-size: auto 60%;
 }
+
 
 
 

@@ -85,7 +85,7 @@ export default {
         }
     },
     created() {
-        this.cheakLogin();
+        // this.cheakLogin();
     }
 }
 </script>

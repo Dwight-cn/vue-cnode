@@ -60,6 +60,7 @@
 <script>
 import moment from 'moment'
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import { Navbar, TabItem, TabContainer, TabContainerItem, Cell, MessageBox, Indicator } from 'mint-ui'
 
 Vue.component(Navbar.name, Navbar);
@@ -74,8 +75,6 @@ export default {
     data() {
         return {
             selected: '1',
-            isLogin: false,
-            accesstoken: '',
             messageData: {
                 has_read_messages: [],
                 hasnot_read_messages: []
@@ -86,36 +85,27 @@ export default {
             }
         }
     },
+    // 计算属性 映射为 store.state中的属性
+    computed: mapState([
+        'accesstoken',
+        'isLogin',
+        'user'
+    ]),
     methods: {
         fetchMessageData() {
             var _this = this;
-            console.log(this.isLogin)
-            if (!this.isLogin) {
-                this.toLogin();
-            } else {
-                var accesstoken = this.accesstoken ? this.accesstoken : ''
-                var url = 'https://cnodejs.org/api/v1/messages' + '?mdrender=false&accesstoken=' + accesstoken;
-                this.$http.get(url)
-                    .then(function(response) {
-                        _this.messageData = response.data.data;
-                        Indicator.close();
-                        console.log(_this.messageData);
-                    })
-                    .catch(function(response) {
-                        Indicator.close();
-                        console.log(response);
-                    })
-            }
-        },
-        // 登录
-        toLogin() {
-            MessageBox.confirm('您还未登录,是否登录？')
-                .then(action => {
-                    this.$router.push('/login');
+            var accesstoken = this.accesstoken ? this.accesstoken : ''
+            var url = 'https://cnodejs.org/api/v1/messages' + '?mdrender=false&accesstoken=' + accesstoken;
+            this.$http.get(url)
+                .then(function(response) {
+                    _this.messageData = response.data.data;
+                    Indicator.close();
+                    console.log(_this.messageData);
                 })
-                .catch(action => {
-
-                });
+                .catch(function(response) {
+                    Indicator.close();
+                    console.log(response);
+                })
         },
         fromNow(date) {
             return moment(date).fromNow()
@@ -123,19 +113,16 @@ export default {
     },
     created() {
         this.selected = this.$route.params.tab || '1';
-        this.cheakLogin()
-            .then(action => {
-                this.fetchMessageData();
-            });
+        this.fetchMessageData();
     },
-	watch: {
+    watch: {
         // '$route': function(to, from) {
-		// 	this.selected = to.params.tab || '1';
-		// },
-		// selected: function(val) {
-		// 	this.$router.push('/message/' + val);
-		// }
-	}
+        // 	this.selected = to.params.tab || '1';
+        // },
+        // selected: function(val) {
+        // 	this.$router.push('/message/' + val);
+        // }
+    }
 }
 </script>
 
@@ -171,6 +158,9 @@ export default {
 .message-tab-con .message-tab-container-item {
     overflow: auto;
 }
+
+
+
 
 
 
@@ -212,15 +202,17 @@ export default {
     font-size: 14px;
 }
 
-.info-detail{
-    line-height:1;
+.info-detail {
+    line-height: 1;
     vertical-align: top;
     /*padding-bottom: 10px;*/
 }
+
 .info-author,
 .info-title {
     color: #80bd01;
 }
+
 .info-title {
     display: inline-block;
     max-width: 7em;
@@ -229,24 +221,30 @@ export default {
     white-space: nowrap;
     vertical-align: top;
 }
-.info-content{
-     overflow: hidden;
+
+.info-content {
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #6a737d;
     line-height: 2.5;
 }
-.info-time{
+
+.info-time {
     font-size: 12px;
     text-align: right;
     padding-right: 0.5em;
 }
+
 .no-message {
     font-size: 16px;
     line-height: 80px;
     color: #cccccc;
     text-align: center;
 }
+
+
+
 
 
 
