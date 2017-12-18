@@ -29,6 +29,7 @@ export default {
 	},
 	methods: {
 		login() {
+			var _this = this
 			Indicator.open('登录中');
 			var url = 'https://cnodejs.org/api/v1/accesstoken';
 			var params = {
@@ -36,14 +37,15 @@ export default {
 			}
 			this.$http.post(url, params)
 				.then(response => {
-					this.setLoginInfo({
+					var userJSON = JSON.stringify(response.data)
+					_this.setLoginInfo({
 						accesstoken: this.accesstoken,
 						isLogin: true,
-						user: response.data
+						user: userJSON
 						})
 					localStorage.setItem("accesstoken", this.accesstoken);
 					localStorage.setItem("isLogin", true);
-					localStorage.setItem("user", response.data);
+					localStorage.setItem("user", userJSON);
 
 					Indicator.close();
 					MessageBox.alert('登录成功', this.user.loginname)

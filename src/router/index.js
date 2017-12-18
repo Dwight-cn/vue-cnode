@@ -57,8 +57,9 @@ export default new Router({
 				needLogin: true
 			}
 		}
-	],
-	scrollBehavior(to, from, savedPosition) {
-		return { x: 0, y: 500 }
-	}
+	]
+	// ,
+	// scrollBehavior(to, from, savedPosition) {
+	// 	return { x: 0, y: 500 }
+	// }
 })

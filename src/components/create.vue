@@ -16,6 +16,7 @@
 
 <script>
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import { mavonEditor } from 'mavon-editor'
 import { MessageBox, Indicator, Field } from 'mint-ui';
 
@@ -30,7 +31,7 @@ export default {
             popupVisible: true,
             title: '',
             value: '',
-            accesstoken: '',
+            // accesstoken: '',
             tabs: {
                 'share': "分享",
                 'ask': "问答",
@@ -62,6 +63,12 @@ export default {
             }
         }
     },
+    // 计算属性 映射为 store.state中的属性
+    computed: mapState([
+        'accesstoken',
+        'isLogin',
+        'user'
+    ]),
     methods: {
         createTopic() {
             Indicator.open('发表中');

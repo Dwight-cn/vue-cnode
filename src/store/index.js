@@ -17,6 +17,11 @@ const store = new Vuex.Store({
             state.accesstoken = loginInfo.accesstoken || state.accesstoken;
             state.isLogin = loginInfo.isLogin || state.isLogin;
             state.user = loginInfo.user || state.user;
+        },
+        resetLoginInfo(state){
+            state.accesstoken = '';
+            state.isLogin = false;
+            state.user = null;
         }
     },
     actions: {

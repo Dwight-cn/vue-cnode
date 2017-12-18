@@ -30,6 +30,7 @@
                             </div>
                         </div>
                     </router-link>
+                    <div class="allread" v-if="messageData.hasnot_read_messages.length>0" @touchstart="setMsgAllRead">全部标记已读</div>
                 </mt-tab-container-item>
                 <mt-tab-container-item id="2" class="message-tab-container-item">
                     <div v-if="!messageData.has_read_messages.length" class="no-message">
@@ -61,7 +62,7 @@
 import moment from 'moment'
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { Navbar, TabItem, TabContainer, TabContainerItem, Cell, MessageBox, Indicator } from 'mint-ui'
+import { Navbar, TabItem, TabContainer, TabContainerItem, Cell, MessageBox, Indicator, Toast } from 'mint-ui'
 
 Vue.component(Navbar.name, Navbar);
 Vue.component(TabItem.name, TabItem);
@@ -104,6 +105,28 @@ export default {
                 })
                 .catch(function(response) {
                     Indicator.close();
+                    console.log(response);
+                })
+        },
+        setMsgAllRead() {
+            var _this = this;
+            var accesstoken = this.accesstoken ? this.accesstoken : ''
+            var url = 'https://cnodejs.org/api/v1/message/mark_all';
+            var params = {
+                accesstoken: this.accesstoken
+            }
+            this.$http.post(url, params)
+                .then(function(response) {
+                    if (response.data.success) {
+                        Toast({
+                            message: '操作成功',
+                            duration: 1000
+                        });
+                        _this.fetchMessageData();
+                    } 
+                    console.log(_this.messageData);
+                })
+                .catch(function(response) {
                     console.log(response);
                 })
         },
@@ -158,6 +181,7 @@ export default {
 .message-tab-con .message-tab-container-item {
     overflow: auto;
 }
+
 
 
 
@@ -241,6 +265,28 @@ export default {
     line-height: 80px;
     color: #cccccc;
     text-align: center;
+}
+
+
+
+
+
+
+
+/*全部标记为已读*/
+
+.allread {
+    position: absolute;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    line-height: 36px;
+    color: #fff;
+    font-size: 14px;
+    padding: 0 20px;
+    border-radius: 25px;
+    background: rgb(128, 189, 1);
+    box-shadow: 3px 3px 10px 0px #93bf36;
 }
 
 

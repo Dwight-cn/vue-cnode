@@ -2,15 +2,15 @@
 	<div class="user">
 		<!--用户信息-->
 		<div class="user-con">
-			<div class="blur-bg" :style="'background-image: url('+ user.avatar_url +')'"></div>
+			<div class="blur-bg" :style="'background-image: url('+ userDetail.avatar_url +')'"></div>
 			<div class="user-info">
-				<img class="avatar" :src="user.avatar_url" alt="">
-				<h2 class="loginname">{{ user.loginname }}</h2>
+				<img class="avatar" :src="userDetail.avatar_url" alt="">
+				<h2 class="loginname">{{ userDetail.loginname }}</h2>
 				<div class="other-info">
-					<span>{{ fromNow(user.create_at) }}注册</span>
-					<span>{{ user.score }} 积分</span>
+					<span>{{ fromNow(userDetail.create_at) }}注册</span>
+					<span>{{ userDetail.score }} 积分</span>
 				</div>
-				<div class="user-exit" @click="Logout"> </div>
+				<div class="user-exit" v-if="userObj.loginname == userDetail.loginname" @click="logout" > </div>
 			</div>
 		</div>
 
@@ -23,10 +23,10 @@
 		<div class="user-tab-con">
 			<mt-tab-container v-model="selected" :swipeable="true">
 				<mt-tab-container-item id="1" class="user-tab-container-item">
-					<mt-cell v-for="item in user.recent_topics" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
+					<mt-cell v-for="item in userDetail.recent_topics" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
 				</mt-tab-container-item>
 				<mt-tab-container-item id="2" class="user-tab-container-item">
-					<mt-cell v-for="item in user.recent_replies" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
+					<mt-cell v-for="item in userDetail.recent_replies" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
 				</mt-tab-container-item>
 				<mt-tab-container-item id="3" class="user-tab-container-item">
 					<mt-cell v-for="item in topicCollect" :title="item.title" is-link :key="item.id" :to="'/topic/'+item.id"></mt-cell>
@@ -40,6 +40,7 @@
 <script>
 import moment from 'moment'
 import Vue from 'vue'
+import { mapState, mapMutations } from 'vuex'
 import { Navbar, TabItem, TabContainer, TabContainerItem, Cell, MessageBox, Indicator, Toast } from 'mint-ui'
 
 Vue.component(Navbar.name, Navbar);
@@ -53,26 +54,38 @@ moment.locale('zh-cn');
 export default {
 	data() {
 		return {
-			user: {
+			userDetail: {
 
 			},
 			topicCollect: null,
 			selected: '1'
 		}
 	},
+	// 计算属性 映射为 store.state中的属性
+	computed: {
+		userObj() {
+			return JSON.parse(this.user);
+		},
+		...mapState([
+			'accesstoken',
+			'isLogin',
+			'user'
+		])
+	},
+	
 	methods: {
 		fetchUserData() {
-			var loginname = this.$route.params.loginname;
+			var loginname = this.$route.params.loginname || this.userObj.loginname;
 			var url = 'https://cnodejs.org/api/v1/user/' + loginname;
 			this.$http.get(url)
 				.then(response => {
-					this.user = response.data.data;
+					this.userDetail = response.data.data;
 					Indicator.close();
-					console.log(this.user);
+					console.log(this.userDetail);
 				})
 		},
 		getchTopicollectData() {
-			var loginname = this.$route.params.loginname;
+			var loginname = this.$route.params.loginname || this.userObj.loginname;
 			var url = 'https://cnodejs.org/api/v1/topic_collect/' + loginname;
 			this.$http.get(url)
 				.then(response => {
@@ -81,16 +94,24 @@ export default {
 					console.log(this.topicCollect);
 				})
 		},
-		Logout() {
+		logout() {
 			localStorage.removeItem("accesstoken");
+			localStorage.removeItem("isLogin");
+			localStorage.removeItem("user");
+			this.resetLoginInfo();
 			Toast({
 				message: '退出成功',
 				duration: 1000
 			});
+			this.$router.push('/');
 		},
 		fromNow(date) {
 			return moment(date).fromNow()
-		}
+		},
+		// 将组件中的 methods 映射为 store.commit 调用
+		...mapMutations([
+			'resetLoginInfo'
+		])
 	},
 	created() {
 		this.fetchUserData();
@@ -134,7 +155,10 @@ export default {
 
 .user-tab-con .user-tab-container-item {
 	overflow: auto;
+	position: relative;
 }
+
+
 
 
 
@@ -157,6 +181,8 @@ export default {
 
 
 
+
+
 /*登出*/
 
 .user-exit {
@@ -168,6 +194,8 @@ export default {
 	background: url(../assets/icon/exit.svg);
 	background-size: 100%;
 }
+
+
 
 
 
@@ -213,7 +241,6 @@ export default {
 .other-info>span {
 	margin: 0 .5em;
 }
-
 
 
 

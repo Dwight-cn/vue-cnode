@@ -30,19 +30,29 @@ export default {
 /*===================过渡效果================*/
 
 .fade-in-left-enter-active {
-  animation: fade-in-left .5s;
+  animation: fade-in-left .5s 0.5s ;
 }
 .fade-in-left-leave-active {
-  animation: fade-in-left .5s reverse;
+  animation: fade-out-left 0.5s ;
 }
 @keyframes fade-in-left {
   0% {
-    transform: translateX(-10%);
+    transform: translateX(-50%);
 	opacity: 0;
   }
   100% {
     transform: translateX(0);
 	opacity: 1;
+  }
+}
+@keyframes fade-out-left {
+  0% {
+    transform: translateX(0%);
+	opacity: 1;
+  }
+  100% {
+    transform: translateX(50%);
+	opacity: 0;
   }
 }
 /*==========================================*/

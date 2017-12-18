@@ -73,7 +73,7 @@
 <script>
 // import Vue from 'vue'
 // import mavonEditor from 'mavon-editor'
-import { MessageBox, Indicator } from 'mint-ui';
+import { MessageBox, Indicator, Toast } from 'mint-ui';
 import { mavonEditor } from 'mavon-editor'
 import moment from 'moment'
 import { mapState } from 'vuex'
@@ -198,7 +198,7 @@ export default {
 
 					})
 					.catch(response => {
-						console.log(response.data);
+						console.log(response);
 						var errMsgArr = response.data.error_msg.split('：');
 						MessageBox.alert(errMsgArr[1],errMsgArr[0]);
 					});
