@@ -10,7 +10,7 @@
 					<span>{{ fromNow(userDetail.create_at) }}注册</span>
 					<span>{{ userDetail.score }} 积分</span>
 				</div>
-				<div class="user-exit" v-if="userObj.loginname == userDetail.loginname" @click="logout" > </div>
+				<div class="user-exit" v-if="userObj && userObj.loginname == userDetail.loginname" @click="logout" > </div>
 			</div>
 		</div>
 
@@ -146,6 +146,7 @@ export default {
 	padding-top: 204px;
 	margin-top: -204px;
 	box-sizing: border-box;
+	color: #6a737d;
 }
 
 .user-tab-con .mint-tab-container,

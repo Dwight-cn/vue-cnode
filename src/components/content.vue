@@ -39,20 +39,27 @@
 		<ul class="panel">
 			<li v-for="(item, index) in articleData.replies" :key="item.author.loginname">
 				<div class="author_content">
-					<img :src="item.author.avatar_url" alt="" width="50">
-					<span class="reply_author">{{ item.author.loginname }}</span>
+					<router-link :to="'/user/'+item.author.loginname">
+						<img :src="item.author.avatar_url" alt="" width="50">
+					</router-link>
+					<router-link :to="'/user/'+item.author.loginname">
+						<span class="reply_author">{{ item.author.loginname }}</span>
+					</router-link>
+					<mt-badge size="small" type="success" v-if="item.author.loginname==author.loginname">楼主</mt-badge>
 					<!--回复评论-->
 					<div class="reply-box">
 						<i class="reply-btn" :data-index="index" @click="replyOther"></i>
 					</div>
 					<!--赞-->
-					<div class="up-box" v-if="userObj && item.author.loginname != userObj.loginname">
+					<div class="up-box" v-if="(userObj && item.author.loginname != userObj.loginname)|| !userObj">
 						<i class="up-btn" :class="{'is-up':item.is_uped}" :data-index="index" @click="ups"></i>
 						<span class="up-num" v-if="item.ups.length">{{item.ups.length}}</span>
 					</div>
 				</div>
+				<!--回复内容-->
 				<div class="reply_content" v-html="item.content"></div>
-				<div class="reply-time">{{ fromNow(item.create_at) }}</div>
+				<!--楼层、回复时间-->
+				<div class="reply-time">{{index+1}}楼 · {{ fromNow(item.create_at) }}</div>
 			</li>
 		</ul>
 
@@ -94,9 +101,7 @@ export default {
 		return {
 			id: 0,
 			articleData: {},
-			author: {
-				loginname: ''
-			},
+			author: {},
 			value: '',
 			replyTo: null,
 			tabs: {
@@ -353,6 +358,9 @@ export default {
 
 
 
+
+
+
 /*======================标题区域======================*/
 
 .topic-header {
@@ -432,6 +440,9 @@ export default {
 
 
 
+
+
+
 /*====================================================*/
 
 
@@ -450,6 +461,9 @@ export default {
 	background: url(../assets/icon/de-collect.svg);
 	background-size: 100%;
 }
+
+
+
 
 
 
@@ -536,6 +550,9 @@ code {
 
 
 
+
+
+
 /*代码样式*/
 
 .prettyprint {
@@ -564,6 +581,9 @@ code {
 	margin: 30px 0 15px;
 	border-bottom: 1px solid #eee;
 }
+
+
+
 
 
 
@@ -599,6 +619,12 @@ code {
 	padding-right: 0.5em;
 }
 
+.reply_author {
+	color: #5a6e79;
+}
+.reply_content{
+	padding-top: 8px;
+}
 
 
 
@@ -619,6 +645,9 @@ code {
 	text-align: center;
 	background-color: #f3f6f9;
 }
+
+
+
 
 
 
@@ -655,8 +684,12 @@ code {
 }
 
 .up-num {
-	color: #80bd01;
+	/*color: #80bd01;*/
+	font-size: 14px;
 }
+
+
+
 
 
 
@@ -685,6 +718,9 @@ code {
 
 
 
+
+
+
 /*====================================================*/
 
 
@@ -693,6 +729,9 @@ code {
 .reply_input {
 	margin: 10px;
 }
+
+
+
 
 
 
