@@ -55,6 +55,8 @@
             </mt-tab-container>
         </div>
 
+    
+
     </div>
 </template>
 
@@ -62,13 +64,14 @@
 import moment from 'moment'
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import axios from 'axios'
 import { Navbar, TabItem, TabContainer, TabContainerItem, Cell, MessageBox, Indicator, Toast } from 'mint-ui'
 
 Vue.component(Navbar.name, Navbar);
 Vue.component(TabItem.name, TabItem);
 Vue.component(TabContainer.name, TabContainer);
 Vue.component(TabContainerItem.name, TabContainerItem);
-Vue.component(Cell.name, Cell);
+Vue.component(Cell.name, Cell); 
 
 moment.locale('zh-cn');
 
@@ -94,40 +97,38 @@ export default {
     ]),
     methods: {
         fetchMessageData() {
-            var _this = this;
             var accesstoken = this.accesstoken ? this.accesstoken : ''
             var url = 'https://cnodejs.org/api/v1/messages' + '?mdrender=false&accesstoken=' + accesstoken;
-            this.$http.get(url)
-                .then(function(response) {
-                    _this.messageData = response.data.data;
+            axios.get(url)
+                .then(response => {
+                    this.messageData = response.data.data;
                     Indicator.close();
-                    console.log(_this.messageData);
+                    console.log(this.messageData);
                 })
-                .catch(function(response) {
+                .catch(err => {
                     Indicator.close();
-                    console.log(response);
+                    console.log(err.response);
                 })
         },
         setMsgAllRead() {
-            var _this = this;
             var accesstoken = this.accesstoken ? this.accesstoken : ''
             var url = 'https://cnodejs.org/api/v1/message/mark_all';
             var params = {
                 accesstoken: this.accesstoken
             }
-            this.$http.post(url, params)
-                .then(function(response) {
+            axios.post(url, params)
+                .then(response => {
                     if (response.data.success) {
                         Toast({
                             message: '操作成功',
                             duration: 1000
                         });
-                        _this.fetchMessageData();
-                    } 
-                    console.log(_this.messageData);
+                        this.fetchMessageData();
+                    }
+                    console.log(this.messageData);
                 })
-                .catch(function(response) {
-                    console.log(response);
+                .catch(err => {
+                    console.log(err.response);
                 })
         },
         fromNow(date) {
@@ -160,7 +161,7 @@ export default {
 /*layout*/
 
 .message {
-    height: 100vh;
+    height: 100%;
     position: relative;
     background: #fafaff;
 }
@@ -182,6 +183,12 @@ export default {
     overflow: auto;
 }
 
+/*菜单*/
+.menu{
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+}
 
 
 
@@ -273,6 +280,7 @@ export default {
 
 
 
+
 /*全部标记为已读*/
 
 .allread {
@@ -288,6 +296,7 @@ export default {
     background: rgb(128, 189, 1);
     box-shadow: 3px 3px 10px 0px #93bf36;
 }
+
 
 
 

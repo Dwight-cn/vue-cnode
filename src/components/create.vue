@@ -17,6 +17,7 @@
 <script>
 import Vue from 'vue'
 import { mapState } from 'vuex'
+import axios from 'axios'
 import { mavonEditor } from 'mavon-editor'
 import { MessageBox, Indicator, Field } from 'mint-ui';
 
@@ -79,15 +80,16 @@ export default {
                 tab: this.tab,
                 content: this.value
             }
-            this.$http.post(url, params)
+            axios.post(url, params)
                 .then(response => {
                     this.$router.push('/topic/' + response.data.topic_id);
                     Indicator.close();
                 })
-                .catch(response => {
+                .catch(err => {
                     Indicator.close();
-                    console.log(response);
-                    console.log('发贴失败')
+                    var errMsgArr = err.response.data.error_msg.split('：');
+                    MessageBox.alert(errMsgArr[1], errMsgArr[0]);
+                    console.log(errMsgArr)
                 })
         }
     },
@@ -106,7 +108,7 @@ export default {
     height: auto;
 }
 
-.tab-select{
+.tab-select {
     width: 100%;
     height: 36px;
     background: #fff;
@@ -118,7 +120,7 @@ export default {
     position: relative;
     padding: 10px;
     z-index: 1;
-    height: 100vh;
+    height: 100%;
     background-color: #444;
     box-sizing: border-box;
     overflow: auto;

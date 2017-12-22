@@ -4,11 +4,13 @@ import Vue from 'vue'
 import store from './store'
 import router from './router'
 import App from './App'
+// import FastClick from 'fastclick'
 import { Indicator, MessageBox } from 'mint-ui'
+
 
 Vue.config.productionTip = false
 
-
+// FastClick.attach(document.body);
 
 // 检查用户登录状态
 const loginInfo = {};

@@ -25,26 +25,7 @@ const store = new Vuex.Store({
         }
     },
     actions: {
-        /*login(context, accesstoken) {
-            if (accesstoken) {
-                var url = 'https://cnodejs.org/api/v1/accesstoken';
-                var params = {
-                    accesstoken: accesstoken
-                }
-                this.$http.post(url, params)
-                    .then(response => {
-                        context.commit('setAccesstoken',accesstoken);
-                        context.commit('setIsLogin', true);
-                        context.commit('setUser', response.data);
-                        resolve('已登录')
-                    })
-                    .catch(response => {
-                        reject('登录失败')
-                    });
-            } else {
-                reject('未登录')
-            }
-        }*/
+
     }
 })
 

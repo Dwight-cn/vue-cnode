@@ -40,6 +40,7 @@
 <script>
 import moment from 'moment'
 import Vue from 'vue'
+import axios from 'axios'
 import { mapState, mapMutations } from 'vuex'
 import { Navbar, TabItem, TabContainer, TabContainerItem, Cell, MessageBox, Indicator, Toast } from 'mint-ui'
 
@@ -77,7 +78,7 @@ export default {
 		fetchUserData() {
 			var loginname = this.$route.params.loginname || this.userObj.loginname;
 			var url = 'https://cnodejs.org/api/v1/user/' + loginname;
-			this.$http.get(url)
+			axios.get(url)
 				.then(response => {
 					this.userDetail = response.data.data;
 					Indicator.close();
@@ -87,7 +88,7 @@ export default {
 		getchTopicollectData() {
 			var loginname = this.$route.params.loginname || this.userObj.loginname;
 			var url = 'https://cnodejs.org/api/v1/topic_collect/' + loginname;
-			this.$http.get(url)
+			axios.get(url)
 				.then(response => {
 					this.topicCollect = response.data.data;
 					Indicator.close();
@@ -131,7 +132,7 @@ export default {
 /*layout*/
 
 .user {
-	height: 100vh;
+	height: 100%;
 	position: relative;
 }
 

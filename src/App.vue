@@ -30,10 +30,10 @@ export default {
 /*===================过渡效果================*/
 
 .fade-in-left-enter-active {
-  animation: fade-in-left .5s 0.5s ;
+  animation: fade-in-left .3s .3s ;
 }
 .fade-in-left-leave-active {
-  animation: fade-out-left 0.5s ;
+  animation: fade-out-left .3s ;
 }
 @keyframes fade-in-left {
   0% {

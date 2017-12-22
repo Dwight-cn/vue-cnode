@@ -32,6 +32,18 @@ a {
     text-decoration: none;
 }
 
+html, body, #app{
+	height: 100%;
+	width: 100%;
+}
+#app{
+	overflow: auto
+}
+body{
+	position: fixed;
+	top: 0;
+	left: 0;
+}
 
 
 /*輸入框*/

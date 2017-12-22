@@ -46,12 +46,13 @@
 						<i class="reply-btn" :data-index="index" @click="replyOther"></i>
 					</div>
 					<!--赞-->
-					<div class="up-box">
+					<div class="up-box" v-if="userObj && item.author.loginname != userObj.loginname">
 						<i class="up-btn" :class="{'is-up':item.is_uped}" :data-index="index" @click="ups"></i>
 						<span class="up-num" v-if="item.ups.length">{{item.ups.length}}</span>
 					</div>
 				</div>
 				<div class="reply_content" v-html="item.content"></div>
+				<div class="reply-time">{{ fromNow(item.create_at) }}</div>
 			</li>
 		</ul>
 
@@ -76,6 +77,7 @@
 import { MessageBox, Indicator, Toast } from 'mint-ui';
 import { mavonEditor } from 'mavon-editor'
 import moment from 'moment'
+import axios from 'axios'
 import { mapState } from 'vuex'
 
 import 'mavon-editor/dist/css/index.css'
@@ -92,7 +94,9 @@ export default {
 		return {
 			id: 0,
 			articleData: {},
-			author: {},
+			author: {
+				loginname: ''
+			},
 			value: '',
 			replyTo: null,
 			tabs: {
@@ -126,28 +130,32 @@ export default {
 		}
 	},
 	// 计算属性 映射为 store.state中的属性
-    computed: mapState([
-        'accesstoken',
-        'isLogin',
-        'user'
-    ]),
+	computed: {
+		userObj() {
+			return JSON.parse(this.user)
+		},
+		...mapState([
+			'accesstoken',
+			'isLogin',
+			'user'
+		])
+	},
 	methods: {
 		getContent() {
 			Indicator.open();
-			var _this = this;
 			this.id = this.$route.params.id;
 			var accesstoken = this.accesstoken ? this.accesstoken : ''
 			var url = 'https://cnodejs.org/api/v1/topic/' + this.id + '?accesstoken=' + accesstoken;
-			this.$http.get(url)
-				.then(function(response) {
-					_this.articleData = response.data.data;
-					_this.author = _this.articleData.author;
+			axios.get(url)
+				.then(response => {
+					this.articleData = response.data.data;
+					this.author = this.articleData.author;
 					Indicator.close();
-					console.log(_this.articleData)
+					// console.log(this.articleData)
 				})
-				.catch(function(response) {
+				.catch(err => {
 					Indicator.close();
-					console.log(response);
+					console.log(err.response);
 				})
 		},
 
@@ -180,7 +188,7 @@ export default {
 					accesstoken: this.accesstoken,
 					content: this.value
 				}
-				this.$http.post(url, params)
+				axios.post(url, params)
 					.then(response => {
 						if (response.data.success) {
 							Toast({
@@ -197,10 +205,10 @@ export default {
 						}
 
 					})
-					.catch(response => {
-						console.log(response);
-						var errMsgArr = response.data.error_msg.split('：');
-						MessageBox.alert(errMsgArr[1],errMsgArr[0]);
+					.catch(err => {
+						console.log(err.response);
+						var errMsgArr = err.response.data.error_msg.split('：');
+						MessageBox.alert(errMsgArr[1], errMsgArr[0]);
 					});
 			}
 		},
@@ -214,7 +222,7 @@ export default {
 					accesstoken: this.accesstoken,
 					topic_id: this.articleData.id
 				}
-				this.$http.post(url, params)
+				axios.post(url, params)
 					.then(response => {
 						if (response.data.success) {
 							this.articleData.is_collect = true;
@@ -231,7 +239,7 @@ export default {
 						}
 
 					})
-					.catch(response => {
+					.catch(err => {
 						Toast({
 							message: '收藏失败',
 							duration: 1000
@@ -243,7 +251,7 @@ export default {
 					accesstoken: this.accesstoken,
 					topic_id: this.articleData.id
 				}
-				this.$http.post(url, params)
+				axios.post(url, params)
 					.then(response => {
 						if (response.data.success) {
 							this.articleData.is_collect = false;
@@ -260,7 +268,7 @@ export default {
 						}
 
 					})
-					.catch(response => {
+					.catch(err => {
 						Toast({
 							message: '取消收藏失败',
 							duration: 1000
@@ -281,7 +289,7 @@ export default {
 				var params = {
 					accesstoken: this.accesstoken
 				}
-				this.$http.post(url, params)
+				axios.post(url, params)
 					.then(response => {
 						if (response.data.success && response.data.action == 'up') {
 							thisReply.is_uped = true;
@@ -292,7 +300,7 @@ export default {
 						}
 
 					})
-					.catch(response => {
+					.catch(err => {
 						Toast({
 							message: '操作失败',
 							duration: 1000
@@ -333,14 +341,20 @@ export default {
 	color: #5a6e79;
 }
 
-.col_fade{
-    margin-top: 20px;
-    border-left: 2px solid #80bd01;
+.col_fade {
+	margin-top: 20px;
+	border-left: 2px solid #80bd01;
 	background-color: #f3f6f9;
 	padding: 10px 14px;
 }
 
+
+
+
+
+
 /*======================标题区域======================*/
+
 .topic-header {
 	padding: 10px;
 	background-color: #f3f6f9;
@@ -412,7 +426,14 @@ export default {
 .topic-header .user .user-l .user-name .views:before {
 	content: "\2022";
 }
+
+
+
+
+
+
 /*====================================================*/
+
 
 /*======================收藏按钮======================*/
 
@@ -430,10 +451,16 @@ export default {
 	background-size: 100%;
 }
 
+
+
+
+
+
 /*====================================================*/
 
 
 /*==========================文章内容======================*/
+
 .topic_content {
 	margin: 10px;
 }
@@ -447,55 +474,71 @@ export default {
 	text-align: justify;
 	line-height: 1.7;
 }
-.markdown-text p, .preview p {
-    white-space: pre-wrap;
-    white-space: -moz-pre-wrap;
-    white-space: -pre-wrap;
-    white-space: -o-pre-wrap;
-    word-wrap: break-word;
-    line-height: 1.5;
+
+.markdown-text p,
+.preview p {
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -pre-wrap;
+	white-space: -o-pre-wrap;
+	word-wrap: break-word;
+	line-height: 1.5;
 }
 
-.preview p, .reply_content p, .reply_form p, .topic_content p {
-    font-size: 15px;
-    line-height: 1.7em;
-    overflow: auto;
+.preview p,
+.reply_content p,
+.reply_form p,
+.topic_content p {
+	font-size: 15px;
+	line-height: 1.7em;
+	overflow: auto;
 }
 
 .panel .markdown-text a {
-    color: #08c;
+	color: #08c;
 }
 
-code, pre {
-    padding: 0 3px 2px;
-    font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
-    font-size: 12px;
-    color: #333;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-}
-
-code {
-    padding: 2px 4px;
-    color: #d14;
-    /*white-space: nowrap;*/
-    background-color: #f7f7f9;
-    border: 1px solid #e1e1e8;
+code,
+pre {
+	padding: 0 3px 2px;
+	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+	font-size: 12px;
+	color: #333;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
 }
 
 code {
-    padding: 0;
-    border: none;
+	padding: 2px 4px;
+	color: #d14;
+	/*white-space: nowrap;*/
+	background-color: #f7f7f9;
+	border: 1px solid #e1e1e8;
 }
 
-.markdown-text li code, .markdown-text p code, .preview li code, .preview p code {
-    color: #000;
-    background-color: #fcfafa;
-    padding: 4px 6px;
+code {
+	padding: 0;
+	border: none;
 }
+
+.markdown-text li code,
+.markdown-text p code,
+.preview li code,
+.preview p code {
+	color: #000;
+	background-color: #fcfafa;
+	padding: 4px 6px;
+}
+
+
+
+
+
+
 /*代码样式*/
-.prettyprint{
+
+.prettyprint {
 	background: #f7f7f9;
 	overflow-x: scroll;
 }
@@ -521,27 +564,48 @@ code {
 	margin: 30px 0 15px;
 	border-bottom: 1px solid #eee;
 }
+
+
+
+
+
+
 /*=====================================================*/
 
 
-
 /*=====================评论区==========================*/
-.panel{
+
+.panel {
 	padding: 0 10px;
 	list-style: none;
 	background-color: #fefefe;
 }
-.panel > li{
+
+.panel>li {
 	border-bottom: 1px solid #eee;
 	padding: 14px 10px;
 }
-.author_content img{
+
+.author_content img {
 	width: 30px;
 	height: 30px;
 	margin-right: 10px;
 	border-radius: 5px;
 }
+
+.reply-time {
+	font-size: 12px;
+	text-align: right;
+	padding-right: 0.5em;
+}
+
+
+
+
+
+
 /*=====================================================*/
+
 
 /*======================取消回复按钮===================*/
 
@@ -555,11 +619,13 @@ code {
 	text-align: center;
 	background-color: #f3f6f9;
 }
+
+
+
+
+
+
 /*====================================================*/
-
-
-
-
 
 
 /*========================赞==========================*/
@@ -591,8 +657,13 @@ code {
 .up-num {
 	color: #80bd01;
 }
-/*====================================================*/
 
+
+
+
+
+
+/*====================================================*/
 
 
 /*======================回复评论======================*/
@@ -608,15 +679,25 @@ code {
 	background: url(../assets/icon/reply-2.svg);
 	background-size: 100%;
 }
+
+
+
+
+
+
 /*====================================================*/
 
 
 /*=====================添加回复区域====================*/
+
 .reply_input {
 	margin: 10px;
 }
+
+
+
+
+
+
 /*======================================================*/
-
-
-
 </style>

@@ -14,6 +14,7 @@ import Vue from 'vue'
 import { Field, MessageBox, Indicator } from 'mint-ui';
 import Router from 'vue-router'
 import { mapMutations } from 'vuex'
+import axios from 'axios'
 
 Vue.component(Field.name, Field);
 
@@ -35,7 +36,7 @@ export default {
 			var params = {
 				accesstoken: this.accesstoken
 			}
-			this.$http.post(url, params)
+			axios.post(url, params)
 				.then(response => {
 					var userJSON = JSON.stringify(response.data)
 					_this.setLoginInfo({
@@ -54,10 +55,10 @@ export default {
 							this.$router.go(-1);
 						})
 				})
-				.catch(response => {
+				.catch(err => {
 					Indicator.close();
 					MessageBox.alert('登录失败', '提示');
-					console.log(response.data);
+					console.log(err.response.data);
 				});
 
 		},
