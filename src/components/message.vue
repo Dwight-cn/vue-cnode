@@ -55,7 +55,8 @@
             </mt-tab-container>
         </div>
 
-    
+        <!--返回首页-->
+        <router-link class="home-btn btn-bottom btn-rb" to="/"></router-link>
 
     </div>
 </template>
@@ -286,7 +287,7 @@ export default {
 .allread {
     position: absolute;
     left: 50%;
-    bottom: 30px;
+    bottom: 17px;
     transform: translateX(-50%);
     line-height: 36px;
     color: #fff;

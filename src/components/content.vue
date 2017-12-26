@@ -68,24 +68,29 @@
 			<span>添加回复</span>
 		</div>
 		<div class="reply_input">
-			<mavon-editor v-model="value" :toolbars="toolbars"></mavon-editor>
+			<mavon-editor v-model="value" :toolbars="toolbars" :subfield="false" ref=md @imgAdd="$imgAdd" @imgDel="$imgDel"></mavon-editor>
 			<a href="javascript:void(0);" class="submit_btn" @click="addReply">回复
 				<span v-if="replyTo">@{{ replyTo.author.loginname }}</span>
 			</a>
 			<a href="javascript:void(0);" class="cancle_reply_btn" @click="cancleReply" v-if="replyTo">取消</a>
 		</div>
 
+		<!--添加回复-->
+		<div class="btn-bottom btn-md reply-fixed-btn" v-if="scrollBottom>300" @click="scrollToBottom"></div>
+
+		<!--返回首页-->
+		<router-link class="home-btn btn-bottom btn-rb" to="/"></router-link>
 	</div>
 </template>
 
 <script>
-// import Vue from 'vue'
-// import mavonEditor from 'mavon-editor'
+
 import { MessageBox, Indicator, Toast } from 'mint-ui';
 import { mavonEditor } from 'mavon-editor'
 import moment from 'moment'
 import axios from 'axios'
 import { mapState } from 'vuex'
+import editorConfig from '../config/editor'
 
 import 'mavon-editor/dist/css/index.css'
 
@@ -110,28 +115,8 @@ export default {
 				'job': "招聘",
 				'dev': "测试"
 			},
-			toolbars: {
-				bold: true, // 粗体
-				italic: true,// 斜体
-				header: true,// 标题
-				// underline: true,// 下划线
-				strikethrough: true,// 中划线
-				// mark: true,// 标记
-				// superscript: true,// 上角标
-				// subscript: true,// 下角标
-				quote: true,// 引用
-				ol: true,// 有序列表
-				ul: true,// 无序列表
-				link: true,// 链接
-				imagelink: true,// 图片链接
-				code: true,// code
-				table: true,// 表格
-				// subfield: true,// 是否需要分栏
-				fullscreen: true,// 全屏编辑
-				readmodel: true,// 沉浸式阅读
-				// htmlcode: true,// 展示html源码
-				help: true// 帮助
-			}
+			toolbars: editorConfig,
+			scrollBottom: 0
 		}
 	},
 	// 计算属性 映射为 store.state中的属性
@@ -156,6 +141,8 @@ export default {
 					this.articleData = response.data.data;
 					this.author = this.articleData.author;
 					Indicator.close();
+
+					this.getScrollBottom();
 					// console.log(this.articleData)
 				})
 				.catch(err => {
@@ -178,8 +165,12 @@ export default {
 		},
 		// 滚动到底部
 		scrollToBottom() {
-			var h = document.body.scrollHeight - window.innerHeight;
-			window.scrollTo(0, h);
+			setTimeout(function() {
+				var app = document.getElementById('app')
+				var h = app.scrollHeight - window.innerHeight;
+				app.scrollTo(0, h)
+			}, 0)
+
 		},
 		// 回复话题
 		addReply() {
@@ -313,6 +304,37 @@ export default {
 					});
 			}
 		},
+		$imgAdd(pos, $file) {
+			// 第一步.将图片上传到服务器.
+			var formdata = new FormData();
+			formdata.append('smfile', $file);
+			console.log(formdata);
+			axios({
+				url: 'https://sm.ms/api/upload',
+				method: 'post',
+				data: formdata,
+				headers: { 'Content-Type': 'multipart/form-data' },
+			}).then((response) => {
+				// 第二步.将返回的url替换到文本原位置![...](./0) -> ![...](url)
+				/**
+				* $vm 指为mavonEditor实例，可以通过如下两种方式获取
+				* 1. 通过引入对象获取: `import {mavonEditor} from ...` 等方式引入后，`$vm`为`mavonEditor`
+				* 2. 通过$refs获取: html声明ref : `<mavon-editor ref=md ></mavon-editor>，`$vm`为 ``
+				*/
+				if (response.data.code == 'success') {
+					this.$refs.md.$img2Url(pos, response.data.data.url);
+				} else {
+					Toast({
+						message: '图片上传失败',
+						duration: 1000
+					});
+				}
+			})
+		},
+
+		$imgDel(pos) {
+			delete this.img_file[pos];
+		},
 		// 登录
 		toLogin() {
 			MessageBox.confirm('您还未登录,是否登录？')
@@ -326,10 +348,16 @@ export default {
 		fromNow(date) {
 			return moment(date).fromNow()
 		},
+		getScrollBottom() {
+			var wrapper = document.getElementById('app');
+			wrapper.addEventListener('scroll', () => {
+				this.scrollBottom = wrapper.scrollHeight-wrapper.scrollTop-wrapper.clientHeight;
+			}, false)
+		}
 	},
 	created() {
-		// this.cheakLogin();
 		this.getContent();
+		// this.getScrollBottom();
 	},
 	watch: {
 		accesstoken: function(val) {
@@ -344,6 +372,7 @@ export default {
 .content {
 	background: #fff;
 	color: #5a6e79;
+	margin-bottom: 70px;
 }
 
 .col_fade {
@@ -352,9 +381,6 @@ export default {
 	background-color: #f3f6f9;
 	padding: 10px 14px;
 }
-
-
-
 
 
 
@@ -438,11 +464,6 @@ export default {
 
 
 
-
-
-
-
-
 /*====================================================*/
 
 
@@ -461,10 +482,6 @@ export default {
 	background: url(../assets/icon/de-collect.svg);
 	background-size: 100%;
 }
-
-
-
-
 
 
 
@@ -551,8 +568,6 @@ code {
 
 
 
-
-
 /*代码样式*/
 
 .prettyprint {
@@ -581,11 +596,6 @@ code {
 	margin: 30px 0 15px;
 	border-bottom: 1px solid #eee;
 }
-
-
-
-
-
 
 
 
@@ -622,10 +632,10 @@ code {
 .reply_author {
 	color: #5a6e79;
 }
-.reply_content{
+
+.reply_content {
 	padding-top: 8px;
 }
-
 
 
 
@@ -645,11 +655,6 @@ code {
 	text-align: center;
 	background-color: #f3f6f9;
 }
-
-
-
-
-
 
 
 
@@ -691,11 +696,6 @@ code {
 
 
 
-
-
-
-
-
 /*====================================================*/
 
 
@@ -715,12 +715,6 @@ code {
 
 
 
-
-
-
-
-
-
 /*====================================================*/
 
 
@@ -729,6 +723,24 @@ code {
 .reply_input {
 	margin: 10px;
 }
+
+
+
+
+
+/*回复按钮*/
+.btn-bottom.reply-fixed-btn {
+	background-image: url(../assets/icon/create-topic-icon.svg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: auto 60%;
+}
+
+
+
+
+
+
 
 
 

@@ -10,7 +10,7 @@
 					<span>{{ fromNow(userDetail.create_at) }}注册</span>
 					<span>{{ userDetail.score }} 积分</span>
 				</div>
-				<div class="user-exit" v-if="userObj && userObj.loginname == userDetail.loginname" @click="logout" > </div>
+				<div class="user-exit" v-if="userObj && userObj.loginname == userDetail.loginname" @click="logout"> </div>
 			</div>
 		</div>
 
@@ -33,7 +33,8 @@
 				</mt-tab-container-item>
 			</mt-tab-container>
 		</div>
-
+		<!--返回首页-->
+		<router-link class="home-btn btn-bottom btn-rb" to="/"></router-link>
 	</div>
 </template>
 
@@ -73,7 +74,7 @@ export default {
 			'user'
 		])
 	},
-	
+
 	methods: {
 		fetchUserData() {
 			var loginname = this.$route.params.loginname || this.userObj.loginname;
@@ -169,6 +170,7 @@ export default {
 
 
 
+
 /*======================用户信息=====================*/
 
 .user-info {
@@ -177,6 +179,7 @@ export default {
 	overflow: hidden;
 	position: relative;
 }
+
 
 
 
@@ -196,6 +199,7 @@ export default {
 	background: url(../assets/icon/exit.svg);
 	background-size: 100%;
 }
+
 
 
 
@@ -243,6 +247,7 @@ export default {
 .other-info>span {
 	margin: 0 .5em;
 }
+
 
 
 

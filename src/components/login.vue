@@ -5,7 +5,12 @@
 		</div>
 		<mt-field placeholder="accesstoken" v-model="accesstoken"></mt-field>
 		<a href="javascript:void(0);" class="submit_btn" @click="login">登录</a>
-		<div>{{ user.loginname }}</div>
+		<div class="login-help" @click="loginHelp">
+			<i><img src="../assets/icon/tip.svg" alt=""></i>如何获取Access Token?
+		</div>
+
+		<!--返回首页-->
+		<router-link class="home-btn btn-bottom btn-rb" to="/"></router-link>
 	</div>
 </template>
 
@@ -25,7 +30,8 @@ export default {
 			isLogin: true,
 			user: {
 
-			}
+			},
+			popupVisible: true
 		}
 	},
 	methods: {
@@ -43,7 +49,7 @@ export default {
 						accesstoken: this.accesstoken,
 						isLogin: true,
 						user: userJSON
-						})
+					})
 					localStorage.setItem("accesstoken", this.accesstoken);
 					localStorage.setItem("isLogin", true);
 					localStorage.setItem("user", userJSON);
@@ -61,6 +67,12 @@ export default {
 					console.log(err.response.data);
 				});
 
+		},
+		loginHelp() {
+			MessageBox({
+				title: '如何获取Access Token?',
+				message: '进入<a href="https://cnodejs.org/">https://cnodejs.org/</a>，<br>登录后，在设置页面可以看到自己的 Access Token。'
+			});
 		},
 		// 将组件中的 methods 映射为 store.commit 调用
 		...mapMutations([
@@ -95,5 +107,25 @@ export default {
 .mint-field {
 	/*height: 36px;*/
 	min-height: 36px;
+}
+
+.login-help {
+	margin-top: 20px;
+	line-height: 26px;
+	color: #fff;
+}
+
+.login-help i {
+	display: inline-block;
+	width: 26px;
+	height: 26px;
+	vertical-align: top;
+	margin-right: 8px;
+}
+
+.login-help i img {
+	width: 100%;
+	height: 100%;
+	vertical-align: top;
 }
 </style>

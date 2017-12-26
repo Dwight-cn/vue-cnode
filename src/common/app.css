@@ -133,3 +133,31 @@ body{
 }
 
 /*======================================================*/
+
+/*底部按钮*/
+.btn-bottom{
+	position: fixed;
+	display: block;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background: rgb(128, 189, 1);
+	box-shadow: 3px 3px 10px 0px #93bf36;
+	z-index: 9999;
+}
+.btn-rb{
+	right: 11px;
+	bottom: 11px
+}
+.btn-md{
+	left: 50%;
+	bottom: 11px;
+	transform: translateX(-50%)
+}
+
+.home-btn{
+	background-image: url(../assets/icon/home.svg);
+	background-repeat: no-repeat;
+	background-position: center;
+	/*background-size: auto 70%;*/
+}
