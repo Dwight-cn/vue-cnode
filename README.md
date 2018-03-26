@@ -1,6 +1,9 @@
-# projectname
 
-> A Vue.js project
+
+### 预览地址：[http://xxdefined.com/cnode/](http://xxdefined.com/cnode/)
+
+### 手机扫描二维码体验更佳：
+![image](http://qr.api.cli.im/qr?data=http%3A%2F%2Fxxdefined.com%2Fcnode%2F&level=H&transparent=0&blockpixel=12&marginblock=1&logourl=&size=260&kid=cliim&key=70615ca67af73f3a268e1bc906b02e43)
 
 ## Build Setup
 
